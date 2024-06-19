@@ -9,7 +9,7 @@
 
 import { fastify } from 'fastify'
 
-const server = fastify({
+export const server = fastify({
     logger: true  // Opção para ativar o logger do Fastify
   })
 
