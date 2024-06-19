@@ -3,8 +3,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fastifyStatic from '@fastify/static';
 import homeRoutes from './routes/homeRoutes.js';
-//import userRoutes from './routes/userRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 //import apiRoutes from './routes/apiRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,7 +20,8 @@ app.register(fastifyStatic, {
 });
 
 app.register(homeRoutes);
-//app.register(userRoutes);
+app.register(userRoutes);
 //app.register(apiRoutes);
+app.register(authRoutes);
 
 export default app;
