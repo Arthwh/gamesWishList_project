@@ -1,22 +1,9 @@
-// import { createServer } from 'node:http'
+import app from './app.js';
 
-// const server = createServer((request, response) => {
-//     response.write("Teste")
-//     return response.end()
-// })
-
-// server.listen(3333)
-
-import { fastify } from 'fastify'
-
-export const server = fastify({
-    logger: true  // Opção para ativar o logger do Fastify
-  })
-
-server.get('/', async (request, reply) => {
-    return "teste home"
-})
-
-server.listen({
-    port: 3333
-})
+app.listen({ port: 3333 }, (err, address) => {
+  if (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+  console.log(`Server running at ${address}`);
+});
