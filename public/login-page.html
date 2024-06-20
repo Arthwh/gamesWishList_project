@@ -22,7 +22,9 @@
     <div class="flex h-screen justify-center items-center">
         <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full sm:w-96">
             <h2 class="text-2xl font-bold mb-4 text-center text-blue-400">Login to Games WishList</h2>
-            <form action="#" class="space-y-4">
+            <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full ">
+            </div>
+            <form class="space-y-6" id="form">
                 <div>
                     <label for="username" class="block mb-1">Username</label>
                     <input type="text" id="username" name="username"
@@ -46,5 +48,6 @@
         <p>&copy; 2024 Games WishList. All rights reserved.</p>
     </footer>
 </body>
+<script type="module" src="js/login.js"></script>
 
 </html>
