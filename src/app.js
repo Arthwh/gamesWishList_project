@@ -1,4 +1,5 @@
 import fastify from 'fastify';
+import fastifyCookie from '@fastify/cookie';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fastifyStatic from '@fastify/static';
@@ -19,6 +20,7 @@ app.register(fastifyStatic, {
   prefix: '/',
 });
 
+app.register(fastifyCookie);
 app.register(homeRoutes);
 app.register(userRoutes);
 //app.register(apiRoutes);

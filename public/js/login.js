@@ -1,6 +1,6 @@
 const form = document.querySelector("#form");
 const messageDiv = document.getElementById("message");
-const usernameInput = document.getElementById("username");
+const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 
 form.addEventListener("submit", async (event) => {
@@ -9,7 +9,7 @@ form.addEventListener("submit", async (event) => {
 });
 
 async function sendLogin() {
-    const username = usernameInput.value;
+    const email = emailInput.value;
     const password = passwordInput.value;
     if (verifyNullFields()) {
         fetch('/login', {
@@ -18,14 +18,13 @@ async function sendLogin() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username,
+                email,
                 password
             })
         }).then(response => {
             return response.json().then(data => {
                 if (response.status === 200) {
-                    console.log(data.message)
-                    window.location.href = data.redirectUrl;
+                    window.location.href = '/';
                 } else {
                     setMessage(data.message);
                     throw new Error(data.message);
@@ -41,7 +40,7 @@ async function sendLogin() {
 }
 
 function verifyNullFields() {
-    if (usernameInput.value === "" || passwordInput.value === "") {
+    if (emailInput.value === "" || passwordInput.value === "") {
         return false
     }
     return true

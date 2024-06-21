@@ -1,16 +1,18 @@
 import { jwt } from 'jsonwebtoken'
-import { secret } from '../config' // Configure sua chave secreta JWT em um arquivo config separado
+import "dotenv/config";
+
+const key = process.env.SECRET_KEY;
 
 function authMiddleware(request, reply, done) {
     // Verifica se o token JWT está presente nos cookies, headers ou corpo da requisição
-    const token = request.cookies.token || request.headers.authorization?.split(' ')[1];
+    const token = request.cookies.jwt-token || request.headers.authorization?.split(' ')[1];
 
     if (!token) {
         return reply.code(401).send({ message: 'Unauthorized' });
     }
 
     // Verifica se o token é válido
-    jwt.verify(token, secret, (err, decoded) => {
+    jwt.verify(token, key, (err, decoded) => {
         if (err) {
             return reply.code(401).send({ message: 'Invalid token' });
         }

@@ -1,20 +1,34 @@
-import { getUserByEmail } from '../repositories/userRepository.js';
-import bcrypt from 'bcrypt';
+import "dotenv/config";
+import { findUserByEmail } from '../repositories/userRepository.js';
+import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 
-const SECRET_KEY = 'your_secret_key';  // Troque por uma chave secreta segura
+const key = process.env.SECRET_KEY;
 
-export async function loginUser(email, password) {
-    const user = await getUserByEmail(email);
-    if (!user) {
-        throw new Error('User not found');
+export async function authenticateUser(email, password) {
+    try {
+        console.log(email + ", " + password)
+        const user = await findUserByEmail(email);
+        if (!user || !(await argon2.verify(user.password, password))) {
+            throw new Error('Credenciais inválidas');
+        }
+        const token = generateToken(user)
+        return { token, userId: user.id };
+    } catch (error) {
+        console.error('Erro na autenticação:', error.message);
+        throw error;
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-        throw new Error('Invalid password');
-    }
+}
 
-    const token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
+function generateToken(user) {
+    const payload = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+    };
+    console.log("key: " + key)
+
+    const token = jwt.sign(payload, key, { expiresIn: '1h' });
     return token;
 }
