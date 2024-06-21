@@ -7,7 +7,6 @@ const key = process.env.SECRET_KEY;
 
 export async function authenticateUser(email, password) {
     try {
-        console.log(email + ", " + password)
         const user = await findUserByEmail(email);
         if (!user || !(await argon2.verify(user.password, password))) {
             throw new Error('Credenciais inválidas');
@@ -27,8 +26,7 @@ function generateToken(user) {
         username: user.username,
         email: user.email,
     };
-    console.log("key: " + key)
-
+    
     const token = jwt.sign(payload, key, { expiresIn: '1h' });
     return token;
 }

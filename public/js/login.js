@@ -26,7 +26,7 @@ async function sendLogin() {
                 if (response.status === 200) {
                     window.location.href = '/';
                 } else {
-                    setMessage(data.message);
+                    setMessage("Error " + response.status + ": " + data.message);
                     throw new Error(data.message);
                 }
             });

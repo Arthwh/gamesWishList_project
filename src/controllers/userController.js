@@ -1,8 +1,18 @@
-//import { getUser, createUser, addItemToUser, getUserItems } from '../services/userService.js';
+import { createUser as createUserService } from '../services/userService.js'
 
 export const getNewAccountPage = async (request, reply) => {
-    return reply.sendFile('new-account-page.html'); // Fastify vai buscar esse arquivo na pasta 'public' configurada no app.js
+    return reply.sendFile('new-account-page.html');
 };
+
+export async function createUser(req, reply) {
+    try {
+        const userData = req.body;
+        await createUserService(userData);
+        reply.status(200).send({ message: 'User created successfully' });
+    } catch (error) {
+        reply.status(400).send({ message: error.message });
+    }
+}
 
 // export async function getUserItemsController(req, reply) {
 //     try {
@@ -25,12 +35,3 @@ export const getNewAccountPage = async (request, reply) => {
 //     }
 // }
 
-// export async function createUserController(req, reply) {
-//     try {
-//         const user = req.body;
-//         await createUser(user);
-//         reply.send({ message: 'User created successfully' });
-//     } catch (error) {
-//         reply.status(500).send({ error: error.message });
-//     }
-// }

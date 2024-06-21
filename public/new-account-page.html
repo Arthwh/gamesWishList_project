@@ -22,48 +22,49 @@
     <div class="flex justify-center items-center flex-1 mb-6">
         <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full sm:w-96">
             <h2 class="text-2xl font-bold mb-4 text-center text-blue-400">Create Account on Games WishList</h2>
-            <form class="space-y-6">
+            <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full "></div>
+            <form id="formCreate" class="space-y-6">
                 <div>
                     <label for="name" class="block mb-1">Full Name</label>
                     <input type="text" id="name" name="name"
                         class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none"
-                        placeholder="Enter your full name" required>
+                        placeholder="Enter your full name">
                 </div>
                 <div>
                     <label for="username" class="block mb-1">Username</label>
                     <input type="text" id="username" name="username"
                         class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none"
-                        placeholder="Choose a username" required>
+                        placeholder="Choose a username">
                 </div>
                 <div>
                     <label for="email" class="block mb-1">Email Address</label>
                     <input type="email" id="email" name="email"
                         class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none"
-                        placeholder="Enter your email address" required>
+                        placeholder="Enter your email address">
                 </div>
                 <div>
                     <label for="password" class="block mb-1">Password</label>
                     <input type="password" id="password" name="password"
                         class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none"
-                        placeholder="Enter your password" required>
+                        placeholder="Enter your password">
                 </div>
                 <div>
                     <label for="password-confirm" class="block mb-1">Confirm Password</label>
                     <input type="password" id="password-confirm" name="password-confirm"
                         class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none"
-                        placeholder="Confirm your password" required>
+                        placeholder="Confirm your password">
                 </div>
                 <div>
                     <label for="birthdate" class="block mb-1">Date of Birth</label>
                     <input type="date" id="birthdate" name="birthdate"
-                        class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none" required>
+                        class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none">
                 </div>
                 <div class="flex items-center">
                     <input type="checkbox" id="newsletter" name="newsletter" class="mr-2">
                     <label for="newsletter">Subscribe to newsletter</label>
                 </div>
                 <div class="flex items-center">
-                    <input type="checkbox" id="terms" name="terms" class="mr-2" required>
+                    <input type="checkbox" id="terms" name="terms" class="mr-2">
                     <label for="terms">I agree to the <a href="#" class="text-blue-400">terms and conditions</a></label>
                 </div>
                 <button type="submit"
@@ -78,5 +79,6 @@
         <p>&copy; 2024 Games WishList. All rights reserved.</p>
     </footer>
 </body>
+<script type="module" src="/js/new-account.js"></script>
 
 </html>

@@ -1,10 +1,7 @@
-//import { getNewAccountPage, getUserItemsController, addUserItemController, createUserController } from '../controllers/userController.js';
-import { getNewAccountPage } from '../controllers/userController.js';
+import { getNewAccountPage, createUser } from '../controllers/userController.js';
 
 async function userRoutes(fastify, options) {
-  // fastify.get('/user/list/:id', getUserItemsController);
-  // fastify.post('/user/add-item/:id', addUserItemController);
-  // fastify.post('/user/create', createUserController);
+  fastify.post('/user/create', createUser);
   fastify.get('/user/create', getNewAccountPage);
 }
 

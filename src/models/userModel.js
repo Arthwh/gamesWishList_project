@@ -11,10 +11,10 @@ export class User {
 
 // Método para validar dados do usuário
 export function validate(userData) {
-    // Implementar validações de dados aqui
-    const { username, email, password, dateOfBirth } = userData;
+    const { username, email, password, birthdate } = userData;
+    console.log(id + ", " + username + ", " + email + ", " + password + ", " + birthdate)
     if (!username || !email || !password || !dateOfBirth) {
-        throw new Error('Todos os campos são obrigatórios');
+        return false
     }
     return true
 }
