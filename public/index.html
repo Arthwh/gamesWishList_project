@@ -8,17 +8,19 @@
     <link href="/css/style.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-900 text-white">
+<body data-loggedIn="<%= loggedIn %>" class="bg-gray-900 text-white">
     <nav class="bg-gray-800 p-4">
         <div class="container mx-auto flex justify-between items-center">
             <a href="/" class="text-white text-xl font-bold">Games WishList</a>
-            <ul class="flex space-x-4">
+            <ul id="navbarLinks" class="flex space-x-4">
                 <li><a href="/" class="text-white">Home</a></li>
-                <li><a href="#" class="text-white">Games</a></li>
-                <li><a href="/login" class="text-white">Login</a></li>
+                <li id="gamesLink" class="hidden"><a href="/games" class="text-white">Games</a></li>
+                <li id="loginLink"><a href="/login" class="text-white">Login</a></li>
+                <li id="logoutLink" class="hidden"><a href="#" class="text-white">Logout</a></li>
             </ul>
         </div>
     </nav>
+    <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full text-center"></div>
     <header class="relative bg-[url('/img/home-img/banner.jpg')] text-white text-center py-20 mb-6">
         <h1 class="text-4xl font-bold">Welcome to Games WishList</h1>
         <p class="mt-4">Create your own wishlist of games and track your favorite titles!</p>
@@ -29,23 +31,33 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-gray-800 p-4 rounded-lg shadow">
                     <h3 class="text-xl font-bold mb-2 text-blue-400">Create and Manage Your Wishlist</h3>
-                    <p class="text-lg">At Games WishList, you can create and manage your personal list of games you want
-                        to play. Our extensive database includes a wide variety of games across different platforms.</p>
+                    <p class="text-lg">At Games WishList, you can create and manage your personal list of games
+                        you
+                        want
+                        to play. Our extensive database includes a wide variety of games across different
+                        platforms.
+                    </p>
                 </div>
                 <div class="bg-gray-800 p-4 rounded-lg shadow">
                     <h3 class="text-xl font-bold mb-2 text-blue-400">Track Game Availability</h3>
-                    <p class="text-lg">You can easily see where each game is available, whether it's on PC, console, or
-                        mobile. Stay updated with the latest game releases and add them to your wishlist with just a few
+                    <p class="text-lg">You can easily see where each game is available, whether it's on PC,
+                        console,
+                        or
+                        mobile. Stay updated with the latest game releases and add them to your wishlist with
+                        just a
+                        few
                         clicks!</p>
                 </div>
                 <div class="bg-gray-800 p-4 rounded-lg shadow">
                     <h3 class="text-xl font-bold mb-2 text-blue-400">Join Our Community</h3>
-                    <p class="text-lg">Join our community of gamers and never miss out on playing your favorite games
+                    <p class="text-lg">Join our community of gamers and never miss out on playing your favorite
+                        games
                         again. Share your wishlist and see what others are playing.</p>
                 </div>
                 <div class="bg-gray-800 p-4 rounded-lg shadow">
                     <h3 class="text-xl font-bold mb-2 text-blue-400">Stay Informed</h3>
-                    <p class="text-lg">Get notifications on game updates, new releases, and special promotions. Your
+                    <p class="text-lg">Get notifications on game updates, new releases, and special promotions.
+                        Your
                         gaming experience, tailored just for you!</p>
                 </div>
             </div>
@@ -76,9 +88,11 @@
             </div>
         </section>
     </main>
-    <footer class="bg-gray-800 text-white text-center py-4">
+    <footer class="bg-gray-800 text-white text-center py-4 w-full end">
         <p>&copy; 2024 Games WishList. All rights reserved.</p>
     </footer>
+
 </body>
+<script type="module" src="js/home.js"></script>
 
 </html>

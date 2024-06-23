@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games List - Games WishList</title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900 text-white flex flex-col h-screen">
+    <nav class="bg-gray-800 p-4 mb-6">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-white text-xl font-bold">Games WishList</a>
+            <ul class="flex space-x-4">
+                <li><a href="/" class="text-white">Home</a></li>
+                <li><a href="/games" class="text-white">Games</a></li>
+                <li id="logoutLink"><a href="#" class="text-white">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mx-auto flex-1 flex flex-col">
+        <!-- Banner de Novidades -->
+        <div class="bg-blue-700 p-6 rounded-lg shadow-lg mb-6 text-center">
+            <h1 class="text-4xl font-bold">Novidades</h1>
+            <p class="text-lg">Confira os últimos lançamentos e novidades do mundo dos jogos!</p>
+        </div>
+
+        <!-- Barra de Pesquisa -->
+        <div class="mb-6">
+            <input type="text" id="search-bar" placeholder="Pesquisar jogos..."
+                class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none">
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="flex flex-1">
+            <!-- Barra Lateral de Filtros -->
+            <aside class="w-1/4 bg-gray-800 p-4 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4">Filtros</h2>
+                <div class="mb-4">
+                    <label for="genre" class="block mb-1">Gênero</label>
+                    <select id="genre" class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none">
+                        <option value="">Todos</option>
+                        <option value="action">Ação</option>
+                        <option value="adventure">Aventura</option>
+                        <option value="rpg">RPG</option>
+                        <option value="sports">Esportes</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="platform" class="block mb-1">Plataforma</label>
+                    <select id="platform" class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none">
+                        <option value="">Todas</option>
+                        <option value="pc">PC</option>
+                        <option value="playstation">PlayStation</option>
+                        <option value="xbox">Xbox</option>
+                        <option value="nintendo">Nintendo</option>
+                    </select>
+                </div>
+                <button
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">Aplicar
+                    Filtros</button>
+            </aside>
+
+            <!-- Lista de Jogos -->
+            <main class="flex-1 bg-gray-800 p-4 rounded-lg shadow-lg ml-6">
+                <h2 class="text-xl font-bold mb-5 text-center">Jogos</h2>
+                <div id="games-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Aqui serão inseridos os jogos dinamicamente -->
+                </div>
+            </main>
+        </div>
+        <div class="flex justify-center mt-4" id="pagination">
+            <button id="previous-page"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-l focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+            <span id="page-number" class="flex items-center px-4">1</span>
+            <button id="next-page"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">Próximo</button>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white text-center py-4 mt-6">
+        <p>&copy; 2024 Games WishList. All rights reserved.</p>
+    </footer>
+</body>
+<script type="module" src="js/games-list-page.js"></script>
+
+</html>

@@ -1,25 +1,29 @@
-import { jwt } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import "dotenv/config";
 
 const key = process.env.SECRET_KEY;
 
-function authMiddleware(request, reply, done) {
-    // Verifica se o token JWT está presente nos cookies, headers ou corpo da requisição
-    const token = request.cookies.jwt-token || request.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-        return reply.code(401).send({ message: 'Unauthorized' });
+export function isAuthenticated(request, reply, done) {
+    let token;
+    if (request.cookies && request.cookies['jwt-token']) {
+        token = request.cookies['jwt-token'];
+    } else if (request.headers && request.headers.authorization) {
+        token = request.headers.authorization.split(' ')[1];
     }
 
-    // Verifica se o token é válido
+    if (!token) {
+        request.isAuthenticated = false;
+        done();
+        return;
+    }
+
     jwt.verify(token, key, (err, decoded) => {
         if (err) {
-            return reply.code(401).send({ message: 'Invalid token' });
+            request.isAuthenticated = false;
+        } else {
+            request.isAuthenticated = true;
+            request.user = decoded; // Anexa o usuário decodificado ao objeto de solicitação para uso posterior
         }
-        // Anexa o usuário decodificado (ou informações relevantes) ao objeto de solicitação para uso posterior
-        request.user = decoded;
         done();
     });
 }
-
-export default authMiddleware;

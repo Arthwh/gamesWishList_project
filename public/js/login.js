@@ -24,7 +24,7 @@ async function sendLogin() {
         }).then(response => {
             return response.json().then(data => {
                 if (response.status === 200) {
-                    window.location.href = '/';
+                    window.location.href = '/games';
                 } else {
                     setMessage("Error " + response.status + ": " + data.message);
                     throw new Error(data.message);

@@ -17,7 +17,6 @@ export async function authenticateUser(email, password) {
         console.error('Erro na autenticação:', error.message);
         throw error;
     }
-
 }
 
 function generateToken(user) {

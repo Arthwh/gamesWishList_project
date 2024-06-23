@@ -36,7 +36,6 @@ export async function findUserByEmail(email) {
                 resolve(null);
                 return;
             }
-            console.log("resultado consulta: " + JSON.stringify(rows[0]));
             resolve(new User(rows[0]));
         });
     });
