@@ -1,5 +1,4 @@
 const form = document.querySelector("#formCreate");
-const messageDiv = document.getElementById("message");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const nameInput = document.getElementById("name");
@@ -58,11 +57,3 @@ function verifyNullFields() {
         || termsInput.checked === false);
 }
 
-function setMessage(msg) {
-    messageDiv.innerHTML = "<p>" + msg + "</p>";
-    messageDiv.classList.add('bg-red-400');
-    messageDiv.classList.remove('hidden');
-    setTimeout(() => {
-        messageDiv.classList.add('hidden');
-    }, 5000);
-}

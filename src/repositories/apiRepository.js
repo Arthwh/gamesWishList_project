@@ -34,22 +34,61 @@ async function getAccessToken() {
 
 export async function fetchGames(limit, offset) {
     const token = await getAccessToken();
-    // console.log("id: " + clientId)
-    // console.log("token: " + accessToken)
-    const response = await fetch('https://api.igdb.com/v4/games/', {
+    console.log("id: " + clientId)
+    console.log("token: " + accessToken)
+    const response = await fetch('https://api.igdb.com/v4/games', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
             'Client-ID': clientId,
         },
-        body: `fields name,genres.name,platforms.name,release_dates.y,rating,cover.url; where category = 0 & aggregated_rating > 90; sort rating desc; limit ${limit}; offset ${offset};`,
+        body: `fields name,genres.name,platforms.abbreviation,release_dates.y,rating,cover.url; where category = 0 & aggregated_rating > 90 & platforms.generation >= 5; sort rating desc; limit ${limit}; offset ${offset};`,
     })
     const data = await response.json();
-    console.log("dados: " + JSON.stringify(data))
+    console.log("games: " + JSON.stringify(data))
     if (!response.ok) {
         throw new Error('Failed to fetch games' + data.message);
     }
-    console.log("testeRepository: " + data)
+    // console.log("Games: " + data)
     return data;
 }
+
+export async function fetchAllGenres(limit) {
+    const token = await getAccessToken();
+    const response = await fetch('https://api.igdb.com/v4/genres', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Client-ID': clientId,
+        },
+        body: `fields name; sort name asc; limit ${limit};`,
+    })
+    const data = await response.json();
+    // console.log("generos: " + JSON.stringify(data))
+    if (!response.ok) {
+        throw new Error('Failed to fetch genres' + data.message);
+    }
+    // console.log("Genres: " + data)
+    return data;
+}
+
+export async function fetchAllPlatforms(limit) {
+    const token = await getAccessToken();
+    const response = await fetch('https://api.igdb.com/v4/platforms', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Client-ID': clientId,
+        },
+        body: `fields abbreviation, generation; where  generation >= 5; sort generation desc; limit ${limit};`,
+    })
+    const data = await response.json();
+    // console.log("plataformas: " + JSON.stringify(data))
+    if (!response.ok) {
+        throw new Error('Failed to fetch platforms' + data.message);
+    }
+    // console.log("Platforms: " + data)
+    return data;
+}
+
 

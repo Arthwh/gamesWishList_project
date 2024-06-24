@@ -1,5 +1,4 @@
 const form = document.querySelector("#form");
-const messageDiv = document.getElementById("message");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 
@@ -26,7 +25,7 @@ async function sendLogin() {
                 if (response.status === 200) {
                     window.location.href = '/games';
                 } else {
-                    setMessage("Error " + response.status + ": " + data.message);
+                    setMessage(data.message);
                     throw new Error(data.message);
                 }
             });
@@ -46,11 +45,3 @@ function verifyNullFields() {
     return true
 }
 
-function setMessage(msg) {
-    messageDiv.innerHTML = "<p>" + msg + "</p>"
-    messageDiv.classList.add('bg-red-400');
-    messageDiv.classList.remove('hidden');
-    setTimeout(() => {
-        messageDiv.classList.add('hidden');
-    }, 5000);
-}

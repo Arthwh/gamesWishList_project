@@ -20,6 +20,7 @@
         </div>
     </nav>
 
+
     <div class="container mx-auto flex-1 flex flex-col">
         <!-- Banner de Novidades -->
         <div class="bg-blue-700 p-6 rounded-lg shadow-lg mb-6 text-center">
@@ -38,35 +39,40 @@
             <!-- Barra Lateral de Filtros -->
             <aside class="w-1/4 bg-gray-800 p-4 rounded-lg shadow-lg">
                 <h2 class="text-xl font-bold mb-4">Filtros</h2>
+
+                <!-- Gênero -->
                 <div class="mb-4">
-                    <label for="genre" class="block mb-1">Gênero</label>
-                    <select id="genre" class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none">
-                        <option value="">Todos</option>
-                        <option value="action">Ação</option>
-                        <option value="adventure">Aventura</option>
-                        <option value="rpg">RPG</option>
-                        <option value="sports">Esportes</option>
-                    </select>
+                    <button
+                        class="w-full bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline"
+                        onclick="toggleCollapse('collapse-genre')">Gênero</button>
+                    <div id="collapse-genre" class="hidden mt-2">
+                        <!-- Generos inseridos dinamicamente -->
+                    </div>
                 </div>
+
+                <!-- Plataforma -->
                 <div class="mb-4">
-                    <label for="platform" class="block mb-1">Plataforma</label>
-                    <select id="platform" class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none">
-                        <option value="">Todas</option>
-                        <option value="pc">PC</option>
-                        <option value="playstation">PlayStation</option>
-                        <option value="xbox">Xbox</option>
-                        <option value="nintendo">Nintendo</option>
-                    </select>
+                    <button
+                        class="w-full bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline"
+                        onclick="toggleCollapse('collapse-platform')">Plataforma</button>
+                    <div id="collapse-platform" class="hidden mt-2">
+                        <!-- Plataformas inseridas dinamicamente -->
+                    </div>
                 </div>
+
                 <button
-                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">Aplicar
-                    Filtros</button>
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
+                    onclick="applyFilters()">Aplicar Filtros</button>
             </aside>
 
             <!-- Lista de Jogos -->
             <main class="flex-1 bg-gray-800 p-4 rounded-lg shadow-lg ml-6">
                 <h2 class="text-xl font-bold mb-5 text-center">Jogos</h2>
-                <div id="games-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full text-center"></div>
+                <div id="loading" class="text-center text-gray-200">
+                    <p>Carregando jogos...</p>
+                </div>
+                <div id="games-list" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                     <!-- Aqui serão inseridos os jogos dinamicamente -->
                 </div>
             </main>
@@ -78,12 +84,15 @@
             <button id="next-page"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">Próximo</button>
         </div>
+
     </div>
+
 
     <footer class="bg-gray-800 text-white text-center py-4 mt-6">
         <p>&copy; 2024 Games WishList. All rights reserved.</p>
     </footer>
 </body>
-<script type="module" src="js/games-list-page.js"></script>
+<script src="js/games-list-page.js"></script>
+<script src="js/utils.js"></script>
 
 </html>
