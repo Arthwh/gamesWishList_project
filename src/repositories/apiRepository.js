@@ -34,7 +34,6 @@ async function getAccessToken() {
 export async function fetchGames(limit, offset, filterQuery) {
     const token = await getAccessToken();
     const body = `fields name, genres.name, platforms.abbreviation, release_dates.y, rating, cover.url, version_title;${filterQuery} limit ${limit}; offset ${offset};`
-    console.log("body: " + body)
     const response = await fetch('https://api.igdb.com/v4/games', {
         method: 'POST',
         headers: {

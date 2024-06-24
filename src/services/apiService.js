@@ -2,8 +2,8 @@ import { fetchGames as fetchGamesByParams, fetchAllGenres, fetchAllPlatforms } f
 
 export async function fetchGames(limit, offset, search, filter) {
     try {
-        if (!limit || !offset) {
-            throw new Error("Limit or offset are missing.")
+        if (limit == null || offset == null) {
+            throw new Error("Limit or offset are missing.");
         }
         let filterQuery = "";
         if (filter && search) {
