@@ -18,9 +18,7 @@ async function isAuthenticated() {
             gamesLink.classList.remove('hidden')
             loginLink.classList.add('hidden')
             logoutLink.classList.remove('hidden')
-            console.log('Usuário logado:', isAuthenticated);
         }
-        console.log('Usuário logado:', isAuthenticated);
     } catch (error) {
         console.error('Erro ao buscar status de autenticação:', error);
     }

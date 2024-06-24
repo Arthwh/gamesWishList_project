@@ -1,3 +1,4 @@
+// Seleção dos elementos do DOM
 const form = document.querySelector("#formCreate");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -8,11 +9,13 @@ const birthdateInput = document.getElementById("birthdate");
 const newsletterInput = document.getElementById("newsletter");
 const termsInput = document.getElementById("terms");
 
+// Adiciona listener ao formulário para o evento de submit
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
     await sendUserData();
 });
 
+// Função para enviar os dados de criacao de usuario
 async function sendUserData() {
     if (verifyNullFields()) {
         if (password_confirmInput.value === passwordInput.value) {

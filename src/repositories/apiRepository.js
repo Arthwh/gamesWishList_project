@@ -21,7 +21,6 @@ async function generateAccessToken() {
     const data = await response.json();
     accessToken = data.access_token;
     tokenExpiration = Date.now() + data.expires_in * 1000; // Expira em data.expires_in segundos
-    // console.log('Token generated successfully');
     return accessToken;
 }
 
@@ -32,24 +31,22 @@ async function getAccessToken() {
     return accessToken;
 }
 
-export async function fetchGames(limit, offset) {
+export async function fetchGames(limit, offset, filterQuery) {
     const token = await getAccessToken();
-    console.log("id: " + clientId)
-    console.log("token: " + accessToken)
+    const body = `fields name, genres.name, platforms.abbreviation, release_dates.y, rating, cover.url, version_title;${filterQuery} limit ${limit}; offset ${offset};`
+    console.log("body: " + body)
     const response = await fetch('https://api.igdb.com/v4/games', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
             'Client-ID': clientId,
         },
-        body: `fields name,genres.name,platforms.abbreviation,release_dates.y,rating,cover.url; where category = 0 & aggregated_rating > 90 & platforms.generation >= 5; sort rating desc; limit ${limit}; offset ${offset};`,
+        body: body,
     })
     const data = await response.json();
-    console.log("games: " + JSON.stringify(data))
     if (!response.ok) {
-        throw new Error('Failed to fetch games' + data.message);
+        throw new Error('Failed to fetch games: ' + data.message);
     }
-    // console.log("Games: " + data)
     return data;
 }
 
@@ -64,11 +61,9 @@ export async function fetchAllGenres(limit) {
         body: `fields name; sort name asc; limit ${limit};`,
     })
     const data = await response.json();
-    // console.log("generos: " + JSON.stringify(data))
     if (!response.ok) {
-        throw new Error('Failed to fetch genres' + data.message);
+        throw new Error('Failed to fetch genres: ' + data.message);
     }
-    // console.log("Genres: " + data)
     return data;
 }
 
@@ -80,14 +75,12 @@ export async function fetchAllPlatforms(limit) {
             'Authorization': `Bearer ${token}`,
             'Client-ID': clientId,
         },
-        body: `fields abbreviation, generation; where  generation >= 5; sort generation desc; limit ${limit};`,
+        body: `fields abbreviation, generation; where generation >= 5; sort generation desc; limit ${limit};`,
     })
     const data = await response.json();
-    // console.log("plataformas: " + JSON.stringify(data))
     if (!response.ok) {
-        throw new Error('Failed to fetch platforms' + data.message);
+        throw new Error('Failed to fetch platforms: ' + data.message);
     }
-    // console.log("Platforms: " + data)
     return data;
 }
 

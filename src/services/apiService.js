@@ -1,9 +1,22 @@
-import { fetchGames as fetchAll, fetchAllGenres, fetchAllPlatforms } from "../repositories/apiRepository.js";
+import { fetchGames as fetchGamesByParams, fetchAllGenres, fetchAllPlatforms } from "../repositories/apiRepository.js";
 
-export async function fetchGames(limit, offset) {
+export async function fetchGames(limit, offset, search, filter) {
     try {
-        const games = await fetchAll(limit, offset);
-        // console.log("depuracaoService: " + games)
+        if (!limit || !offset) {
+            throw new Error("Limit or offset are missing.")
+        }
+        let filterQuery = "";
+        if (filter && search) {
+            filterQuery = ` where ${filter}; search "${search}";`;
+        } else if (filter && !search) {
+            filterQuery = ` where ${filter}; sort rating desc;`;
+        } else if (!filter && search) {
+            filterQuery = ` search "${search}";`;
+        }
+        else {
+            filterQuery = ` sort rating desc;`
+        }
+        const games = await fetchGamesByParams(limit, offset, filterQuery);
         return games;
     } catch (error) {
         console.error(error.message);
@@ -14,7 +27,6 @@ export async function fetchGames(limit, offset) {
 export async function fetchGenres(limit) {
     try {
         const genres = await fetchAllGenres(limit);
-        // console.log("depuracaoService: " + genres)
         return genres;
     } catch (error) {
         console.error(error.message);
@@ -25,7 +37,6 @@ export async function fetchGenres(limit) {
 export async function fetchPlatforms(limit) {
     try {
         const platforms = await fetchAllPlatforms(limit);
-        // console.log("depuracaoService: " + platforms)
         return platforms;
     } catch (error) {
         console.error(error.message);

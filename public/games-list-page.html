@@ -29,9 +29,13 @@
         </div>
 
         <!-- Barra de Pesquisa -->
-        <div class="mb-6">
+        <div class="mb-6 flex items-center">
             <input type="text" id="search-bar" placeholder="Pesquisar jogos..."
-                class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none">
+                class="w-full px-3 py-2 bg-gray-700 rounded-l-md text-white outline-none">
+            <button onclick="searchGames()"
+                class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 focus:outline-none focus:shadow-outline transition duration-300">
+                Pesquisar
+            </button>
         </div>
 
         <!-- Conteúdo Principal -->
@@ -39,6 +43,14 @@
             <!-- Barra Lateral de Filtros -->
             <aside class="w-1/4 bg-gray-800 p-4 rounded-lg shadow-lg">
                 <h2 class="text-xl font-bold mb-4">Filtros</h2>
+                <div id="active-filters" class="bg-gray-400 p-4 mb-4 rounded-md hidden">
+                    <h3 class="text-lg font-semibold mb-2">Filtros Ativos</h3>
+                    <div id="active-filters-list" class="flex flex-wrap gap-2"></div>
+                    <button onclick="clearFilters()" id="clear-filters-btn"
+                        class="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md focus:outline-none w-full">
+                        Limpar Filtros
+                    </button>
+                </div>
 
                 <!-- Gênero -->
                 <div class="mb-4">
@@ -62,12 +74,12 @@
 
                 <button
                     class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
-                    onclick="applyFilters()">Aplicar Filtros</button>
+                    onclick="filterGames()">Aplicar Filtros</button>
             </aside>
 
             <!-- Lista de Jogos -->
             <main class="flex-1 bg-gray-800 p-4 rounded-lg shadow-lg ml-6">
-                <h2 class="text-xl font-bold mb-5 text-center">Jogos</h2>
+                <h2 id="searchResult" class="text-xl font-bold mb-5">Jogos</h2>
                 <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full text-center"></div>
                 <div id="loading" class="text-center text-gray-200">
                     <p>Carregando jogos...</p>

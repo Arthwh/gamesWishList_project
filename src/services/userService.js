@@ -3,6 +3,11 @@ import { verifyUniqueUser, createUser as createUserRepository } from '../reposit
 
 export async function createUser(userData) {
     try {
+        // Validação de entrada
+        if (!userData.email || !userData.username || !userData.password) {
+            throw new Error('Email, username, and password are required fields');
+        }
+
         const result = await verifyUniqueUser(userData.email, userData.username);
         if (result.unique) {
             userData.password = await argon2.hash(userData.password);
@@ -12,7 +17,7 @@ export async function createUser(userData) {
             throw new Error(result.message);
         }
     } catch (error) {
-        console.error('Erro ao criar usuário: ', error.message);
+        console.error('Erro ao criar usuário: ' + error.message);
         throw error;
     }
 }

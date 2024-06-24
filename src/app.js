@@ -9,22 +9,29 @@ import apiRoutes from './routes/apiRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import gamesRoutes from './routes/gamesRoutes.js';
 
+// Obter o caminho do arquivo atual e seu diretório
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Criar uma instância do Fastify
 const app = fastify({
-  logger: true
+  // Opções adicionais podem ser configuradas aqui, como logger: true para ativar o registro de logs
 });
 
+// Registrar o plugin Fastify Static para servir arquivos estáticos
 app.register(fastifyStatic, {
-  root: path.join(__dirname, '../public'),
-  prefix: '/',
+  root: path.join(__dirname, '../public'), // Define o diretório raiz para arquivos estáticos
+  prefix: '/', // Prefixo da URL para servir arquivos estáticos
 });
 
+// Registrar o plugin Fastify Cookie para manipulação de cookies
 app.register(fastifyCookie);
-app.register(homeRoutes);
-app.register(userRoutes);
-app.register(apiRoutes);
-app.register(authRoutes);
-app.register(gamesRoutes);
+
+// Registrar os diferentes grupos de rotas
+app.register(homeRoutes);    // Rotas relacionadas à página inicial
+app.register(userRoutes);    // Rotas relacionadas a usuários
+app.register(apiRoutes);     // Rotas da API
+app.register(authRoutes);    // Rotas de autenticação
+app.register(gamesRoutes);   // Rotas relacionadas a jogos
+
 export default app;

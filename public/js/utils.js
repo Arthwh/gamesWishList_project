@@ -1,6 +1,8 @@
+// Seleção dos elementos do DOM
 const messageDiv = document.getElementById("message");
 const logoutLink = document.getElementById("logoutLink") || ""
 
+// Funcao para colocar mensagem de erro na tela
 function setMessage(msg) {
     messageDiv.innerHTML = "<p>" + msg + "</p>"
     messageDiv.classList.add('bg-red-400');
@@ -10,6 +12,7 @@ function setMessage(msg) {
     }, 5000);
 }
 
+// Adiciona um listener para o botao de logout
 document.addEventListener("DOMContentLoaded", () => {
     logoutLink.addEventListener('click', async (event) => {
         event.preventDefault();
