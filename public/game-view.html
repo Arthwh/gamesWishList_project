@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Details - Games WishList</title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900 text-white flex flex-col h-screen">
+    <nav class="bg-gray-800 p-4 mb-6">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-white text-xl font-bold">Games WishList</a>
+            <ul class="flex space-x-4">
+                <li><a href="/" class="text-white">Home</a></li>
+                <li><a href="/games" class="text-white">Games</a></li>
+                <li id="logoutLink"><a href="#" class="text-white">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mx-auto flex-1 flex flex-col">
+        <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full "></div>
+        <!-- Game Details Section -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 flex flex-col lg:flex-row min-h-max">
+            <img id="cover" src="" alt="Game Cover" class="w-full lg:w-2/4 rounded-md mb-4 lg:mb-0 lg:mr-6">
+            <div class="w-full">
+                <h1 id="gameName" class="text-4xl font-bold mb-4">Game Name</h1>
+                <p id="summary" class="mb-4">Game summary goes here...</p>
+                <p id="status" class="mb-4">Status: <span class="font-semibold">Release Status</span></p>
+                <p id="rating" class="mb-4">User Rating: <span class="font-semibold">8.5</span></p>
+                <p id="aggregatedRating" class="mb-4">Critic Rating: <span class="font-semibold">90</span></p>
+                <!-- Description and External Links -->
+                <h2 class="text-2xl font-bold mt-6">Description and External Links</h2>
+                <p id="description" class="mb-4">Game description goes here...</p>
+                <div id="externalLinks" class="flex flex-wrap gap-4">
+                    <!-- External game links will be dynamically added here -->
+                </div>
+                <button id="wishlistButton"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline transition duration-300">
+                    Add to Wishlist
+                </button>
+            </div>
+        </div>
+
+        <!-- Critic Reviews -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Critic Reviews</h2>
+            <div id="criticReviews" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Critic review cards will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Similar Games Carousel -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Similar Games</h2>
+            <div id="similarGamesCarousel" class="relative">
+                <button id="prevButton"
+                    class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-l-md hover:bg-gray-600 focus:outline-none">‹</button>
+                <div id="similarGames" class="overflow-hidden flex gap-4">
+                    <!-- Similar game items will be dynamically added here -->
+                </div>
+                <button id="nextButton"
+                    class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-r-md hover:bg-gray-600 focus:outline-none">›</button>
+            </div>
+        </div>
+
+        <!-- Game Videos -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Videos</h2>
+            <div id="videos" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <!-- Video iframes will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Game Artworks -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Artworks</h2>
+            <div id="artworks" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- Artwork images will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Game Screenshots -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">Screenshots</h2>
+            <div id="screenshots" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- Screenshot images will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white text-center py-4 mt-6">
+        <p>&copy; 2024 Games WishList. All rights reserved.</p>
+    </footer>
+</body>
+
+<script src="/js/utils.js"></script>
+<script src="/js/game-view.js"></script>
+
+</html>

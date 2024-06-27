@@ -1,10 +1,4 @@
-import { fetchGames, fetchGenres, fetchPlatforms } from '../services/apiService.js';
-
-// Função utilitária para lidar com erros
-const handleErrors = (reply, error, errorMessage) => {
-    console.error(errorMessage, error);
-    return reply.status(500).send({ error: errorMessage + error.message });
-};
+import { fetchGames, fetchGenres, fetchPlatforms, fetchGameFullInfo } from '../services/apiService.js';
 
 // Rota para obter jogos
 export const getGames = async (request, reply) => {
@@ -17,7 +11,7 @@ export const getGames = async (request, reply) => {
         const games = await fetchGames(limit, offset, decodedSearch, decodedFilter);
         return reply.status(200).send(games);
     } catch (error) {
-        return handleErrors(reply, error, 'Error fetching games:');
+        return reply.status(500).send({ error: error.message });
     }
 };
 
@@ -28,7 +22,7 @@ export const getGenres = async (request, reply) => {
         const genres = await fetchGenres(limit);
         return reply.status(200).send(genres);
     } catch (error) {
-        return handleErrors(reply, error, 'Error fetching genres:');
+        return reply.status(500).send({ error: error.message });
     }
 };
 
@@ -39,6 +33,20 @@ export const getPlatforms = async (request, reply) => {
         const platforms = await fetchPlatforms(limit);
         return reply.status(200).send(platforms);
     } catch (error) {
-        return handleErrors(reply, error, 'Error fetching platforms:');
+        return reply.status(500).send({ error: error.message });
+    }
+};
+
+// Rota para obter jogos
+export const getGameFullInfo = async (request, reply) => {
+    try {
+        const id = request.query.id;
+        if (!id) {
+            return reply.status(400).send({ error: 'Missing game id' });
+        }
+        const gameData = await fetchGameFullInfo(id);
+        return reply.status(200).send(gameData);
+    } catch (error) {
+        return reply.status(500).send({ error: error.message });
     }
 };

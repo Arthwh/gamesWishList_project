@@ -245,6 +245,7 @@ function clearFilters() {
 
 //Funcao para redirecionar para uma view exclusiva de cada jogo
 function viewMoreInfo(gameId) {
+    window.location.href = `/games/info?id=${gameId}`
     console.log("Ver mais informações para o jogo ID:", gameId);
 }
 
