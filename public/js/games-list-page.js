@@ -10,7 +10,7 @@ const activeFiltersList = document.getElementById("active-filters-list")
 const limitGamesPage = 30
 const limitGenres = 100
 const limitPlatforms = 100
-const defaultFIlter = "category = 0 & aggregated_rating > 90 & platforms.generation >= 5"
+const defaultFIlter = "category = 0 & aggregated_rating > 90 & platforms.generation >= 5 & version_title = null"
 const fixedFilterQuery = "category = 0 & version_title = null"
 
 // Variáveis de estado
@@ -105,7 +105,7 @@ async function loadGames(page, search, filter) {
     gamesList.style.display = 'none';
 
     try {
-        const response = await fetch(`/api/games/all?limit=${limitGamesPage}&page=${page}&search=${encodeURIComponent(search)}&filter=${encodeURIComponent(filter)}`);
+        const response = await fetch(`/api/games?limit=${limitGamesPage}&page=${page}&search=${encodeURIComponent(search)}&filter=${encodeURIComponent(filter)}`);
         const data = await response.json();
 
         // Ocultar a mensagem de carregamento
@@ -119,27 +119,41 @@ async function loadGames(page, search, filter) {
                     const { gameGenres, gamePlatforms, gameReleases } = await transformData(game.genres, game.platforms, game.release_dates);
                     const coverUrl = game.cover ? game.cover.url : '';
                     const gameCard = `
-                        <div class="bg-gray-700 p-4 rounded-lg shadow-lg">
-                            <h3 class="text-xl font-bold text-center mb-5">${game.name}</h3>
-                            <p class="hidden">${game.id}</p>
-                            <div class="shadow-lg bg-gray-500 rounded-lg p-2 mt-5 flex flex-col items-center">
-                                <img src="${coverUrl}" alt="${game.name}" class="rounded-lg object-cover h-64 w-full mb-4">
-                                <div class="text-gray-200 text-center p-2">
-                                    <p class="p-2">Rating: <b>${game.rating !== undefined ? game.rating.toFixed(2) : 'Rating não disponível'}</b></p>
-                                    <p class="p-2">Lançamento: <b>${gameReleases}</b></p>
-                                    <p class="p-2">Gêneros: <b>${gameGenres}</b></p>
-                                    <p class="p-2">Plataformas: <b>${gamePlatforms}</b></p>
-                                </div>
-                                <div class="mt-4 flex justify-center space-x-4">
-                                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="viewMoreInfo(${game.id})">
-                                        Ver mais informações
+                    <div class="bg-gray-700 p-4 rounded-lg shadow-lg flex flex-col">
+                        <h3 class="text-xl font-bold text-center">${game.name}</h3>
+                        <p class="hidden">${game.id}</p>
+                        <div class="shadow-lg bg-gray-500 rounded-lg p-2 mt-5 flex flex-col items-center h-full">
+                            <img src="${coverUrl}" alt="${game.name}" class="rounded-lg object-cover h-64 w-full mb-4">
+                            <div class="text-gray-200 text-center p-2 h-full flex-grow flex flex-col">
+                                <p class="p-2">Rating: <b>${game.rating !== undefined ? game.rating.toFixed(2) : 'Rating não disponível'}</b></p>
+                                <p class="p-2">Lançamento: <b>${gameReleases}</b></p>
+                                <p class="p-2">Gêneros: <b>${gameGenres}</b></p>
+                                <p class="p-2">Plataformas: <b>${gamePlatforms}</b></p>
+                                <div class="mt-4 flex justify-center space-x-4 mt-auto">
+                                    <button onclick="viewMoreInfo(${game.id})" class="relative cursor-pointer opacity-90 hover:opacity-100 transition-opacity p-[2px] bg-black rounded-[16px] bg-gradient-to-t from-[#1e3a8a] to-[#3b82f6] active:scale-95">
+                                        <span class="w-full h-full flex items-center gap-2 px-8 py-3 bg-[#B931FC] text-white rounded-[14px] bg-gradient-to-t from-[#1e40af] to-[#60a5fa]">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                                <path
+                                                    d="M8 13V9m-2 2h4m5-2v.001M18 12v.001m4-.334v5.243a3.09 3.09 0 0 1-5.854 1.382L16 18a3.618 3.618 0 0 0-3.236-2h-1.528c-1.37 0-2.623.774-3.236 2l-.146.292A3.09 3.09 0 0 1 2 16.91v-5.243A6.667 6.667 0 0 1 8.667 5h6.666A6.667 6.667 0 0 1 22 11.667Z"
+                                                ></path>
+                                            </svg>Ver mais</span>
                                     </button>
-                                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="addToList(${game.id})">
-                                        Adicionar à lista
+                                    <button title="Adicionar à lista" onclick="addToList(${game.id})" class="group cursor-pointer outline-none hover:rotate-90 duration-300">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="50px"
+                                            height="50px"
+                                            viewBox="0 0 24 24"
+                                            class="stroke-slate-400 fill-none group-hover:fill-slate-800 group-active:stroke-slate-200 group-active:fill-slate-600 group-active:duration-0 duration-300">
+                                            <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke-width="1.5"></path>
+                                            <path d="M8 12H16" stroke-width="1.5"></path>
+                                            <path d="M12 16V8" stroke-width="1.5"></path>
+                                        </svg>
                                     </button>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     `;
                     gamesList.innerHTML += gameCard;
                 }
@@ -193,6 +207,7 @@ function filterGames() {
     activeFiltersList.innerHTML = ""
 
     if (selectedGenresid.length > 0) {
+        console.log("genresId: " + selectedGenresid)
         filterQuery += `& genres = (${selectedGenresid.join(',')})`;
         activeFiltersList.innerHTML += `<h3 class="text-gray-700"><b>Gêneros: <b></h3>`
         selectedGenresNames.forEach(genreName => {
@@ -200,17 +215,19 @@ function filterGames() {
         })
     }
     if (selectedPlatformsid.length > 0) {
+        console.log("platformsId: " + selectedPlatformsid)
         filterQuery += `& platforms = (${selectedPlatformsid.join(',')})`;
         activeFiltersList.innerHTML += `<h3 class="text-gray-700"><b>Plataformas: <b></h3>`
         selectedPlatformsNames.forEach(platformName => {
             activeFiltersList.innerHTML += `<label>${platformName}</label><br>`;
         })
     }
-
-    document.getElementById("active-filters").classList.remove("hidden")
-    currentPage = 1
-    loadGames(currentPage, searchQuery, filterQuery)
-
+    if (activeFiltersList.innerHTML != "") {
+        console.log("active: " + activeFiltersList)
+        document.getElementById("active-filters").classList.remove("hidden")
+        currentPage = 1
+        loadGames(currentPage, searchQuery, filterQuery)
+    }
 }
 
 // Obtém os gêneros selecionados no filtro

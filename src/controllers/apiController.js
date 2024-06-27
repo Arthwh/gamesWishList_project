@@ -1,4 +1,4 @@
-import { fetchGames, fetchGenres, fetchPlatforms } from '../services/apiService.js';
+import { fetchGamesService, fetchGenresService, fetchPlatformsService, fetchTopRatedGamesService } from '../services/apiService.js';
 
 // Função utilitária para lidar com erros
 const handleErrors = (reply, error, errorMessage) => {
@@ -14,7 +14,7 @@ export const getGames = async (request, reply) => {
         const decodedFilter = decodeURIComponent(filter) || null;
         const offset = (page - 1) * limit;
 
-        const games = await fetchGames(limit, offset, decodedSearch, decodedFilter);
+        const games = await fetchGamesService(limit, offset, decodedSearch, decodedFilter);
         return reply.status(200).send(games);
     } catch (error) {
         return handleErrors(reply, error, 'Error fetching games:');
@@ -25,7 +25,7 @@ export const getGames = async (request, reply) => {
 export const getGenres = async (request, reply) => {
     const { limit } = request.query;
     try {
-        const genres = await fetchGenres(limit);
+        const genres = await fetchGenresService(limit);
         return reply.status(200).send(genres);
     } catch (error) {
         return handleErrors(reply, error, 'Error fetching genres:');
@@ -36,9 +36,19 @@ export const getGenres = async (request, reply) => {
 export const getPlatforms = async (request, reply) => {
     const { limit } = request.query;
     try {
-        const platforms = await fetchPlatforms(limit);
+        const platforms = await fetchPlatformsService(limit);
         return reply.status(200).send(platforms);
     } catch (error) {
         return handleErrors(reply, error, 'Error fetching platforms:');
+    }
+};
+
+// Rota para obter jogos mais avaliados
+export const getTopRatedGames = async (request, reply) => {
+    try {
+        const platforms = await fetchTopRatedGamesService();
+        return reply.status(200).send(platforms);
+    } catch (error) {
+        return handleErrors(reply, error, 'Error fetching top rated games:');
     }
 };

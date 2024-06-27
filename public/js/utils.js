@@ -31,3 +31,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     })
 })
+
+// export function redirectToGamePage(gameId) {
+
+// }
+
+// export async function addGameToList(gameId) {
+//     try {
+
+//     } catch (error) {
+
+//     }
+// }

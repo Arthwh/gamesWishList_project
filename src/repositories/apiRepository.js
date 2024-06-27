@@ -21,6 +21,7 @@ async function generateAccessToken() {
     const data = await response.json();
     accessToken = data.access_token;
     tokenExpiration = Date.now() + data.expires_in * 1000; // Expira em data.expires_in segundos
+    // console.log("accessToken: " + accessToken)
     return accessToken;
 }
 
@@ -31,7 +32,7 @@ async function getAccessToken() {
     return accessToken;
 }
 
-export async function fetchGames(limit, offset, filterQuery) {
+export async function fetchGamesRepository(limit, offset, filterQuery) {
     const token = await getAccessToken();
     const body = `fields name, genres.name, platforms.abbreviation, release_dates.y, rating, cover.url, version_title;${filterQuery} limit ${limit}; offset ${offset};`
     const response = await fetch('https://api.igdb.com/v4/games', {
@@ -49,7 +50,25 @@ export async function fetchGames(limit, offset, filterQuery) {
     return data;
 }
 
-export async function fetchAllGenres(limit) {
+export async function fetchTopRatedGamesRepository() {
+    const token = await getAccessToken();
+    const body = `fields name, cover.url, storyline; where category = 0 & platforms.generation >= 5 & version_title = null; sort rating_count desc; limit 4;`
+    const response = await fetch('https://api.igdb.com/v4/games', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Client-ID': clientId,
+        },
+        body: body,
+    })
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error('Failed to fetch games: ' + data.message);
+    }
+    return data;
+}
+
+export async function fetchAllGenresRepository(limit) {
     const token = await getAccessToken();
     const response = await fetch('https://api.igdb.com/v4/genres', {
         method: 'POST',
@@ -66,7 +85,7 @@ export async function fetchAllGenres(limit) {
     return data;
 }
 
-export async function fetchAllPlatforms(limit) {
+export async function fetchAllPlatformsRepository(limit) {
     const token = await getAccessToken();
     const response = await fetch('https://api.igdb.com/v4/platforms', {
         method: 'POST',
