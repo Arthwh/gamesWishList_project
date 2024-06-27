@@ -31,3 +31,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     })
 })
+
+// export async function addGameToList(gameId) {
+//     try {
+
+//     } catch (error) {
+
+//     }
+// }
