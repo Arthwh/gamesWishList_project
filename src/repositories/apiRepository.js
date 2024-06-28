@@ -101,7 +101,7 @@ export async function fetchAllPlatformsRepository(token, limit) {
 }
 
 export async function fetchGameDataRepository(token, id) {
-    const body = `fields name, summary, storyline, status, videos, genres.name, dlcs, external_games, involved_companies.company.name, websites.url, first_release_date, rating, similar_games, platforms.abbreviation, release_dates.y, rating, cover.url, version_title; where id = ${id};`;
+    const body = `fields name, summary, storyline, status, videos, genres.name, dlcs, external_games, involved_companies.company.name, websites.url, websites.trusted, first_release_date, rating, similar_games, platforms.abbreviation, release_dates.y, rating, cover.url, version_title; where id = ${id};`;
     console.log("body: " + JSON.stringify(body))
     const response = await fetch('https://api.igdb.com/v4/games', {
         method: 'POST',

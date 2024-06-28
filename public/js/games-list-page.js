@@ -117,13 +117,14 @@ async function loadGames(page, search, filter) {
             data.forEach(async game => {
                 if (!game.version_title) { // Filtra para não mostrar versões diferentes do mesmo jogo
                     const { gameGenres, gamePlatforms, gameReleases } = await transformData(game.genres, game.platforms, game.release_dates);
-                    const coverUrl = game.cover ? game.cover.url : '';
+                    var coverUrl = game.cover.url || '';
+                    var coverEdited = coverUrl.replace("t_thumb", "t_cover_big")
                     const gameCard = `
                     <div class="bg-gray-700 p-4 rounded-lg shadow-lg flex flex-col">
                         <h3 class="text-xl font-bold text-center">${game.name}</h3>
                         <p class="hidden">${game.id}</p>
                         <div class="shadow-lg bg-gray-500 rounded-lg p-2 mt-5 flex flex-col items-center h-full">
-                            <img src="${coverUrl}" alt="${game.name}" class="rounded-lg object-cover h-64 w-full mb-4">
+                            <img src="${coverEdited}" alt="${game.name}" class="rounded-lg object-cover h-75 w-full mb-4">
                             <div class="text-gray-200 text-center p-2 h-full flex-grow flex flex-col">
                                 <p class="p-2">Rating: <b>${game.rating !== undefined ? game.rating.toFixed(2) : 'Rating não disponível'}</b></p>
                                 <p class="p-2">Lançamento: <b>${gameReleases}</b></p>
