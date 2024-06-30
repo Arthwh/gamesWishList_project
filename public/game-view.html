@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Details - Games WishList</title>
     <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/game-view.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-900 text-white flex flex-col h-screen">
@@ -15,80 +16,105 @@
             <ul class="flex space-x-4">
                 <li><a href="/" class="text-white">Home</a></li>
                 <li><a href="/games" class="text-white">Games</a></li>
-                <li id="logoutLink"><a href="#" class="text-white">Logout</a></li>
+                <li><a href="/games/list" class="text-white">My Games</a></li>
+                <li><button id="logoutLink"
+                        class="group flex items-center justify-start w-11 h-8 bg-red-600 rounded-full cursor-pointer relative overflow-hidden transition-all duration-200 shadow-lg hover:w-32 hover:rounded-lg active:translate-x-1 active:translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-full transition-all duration-300 group-hover:justify-start group-hover:px-3">
+                            <svg class="w-4 h-4" viewBox="0 0 512 512" fill="white">
+                                <path
+                                    d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div
+                            class="absolute right-5 transform translate-x-full opacity-0 text-white text-lg font-semibold transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                            Logout</div>
+                    </button></li>
             </ul>
         </div>
     </nav>
 
-    <div class="container mx-auto flex-1 flex flex-col">
+    <div id="loading" class="z-40 h-full w-full text-gray-200">
+        <p class="justify-center text-center items-center">Carregando dados do jogo...</p>
+    </div>
+
+    <div id="mainContainer" class="container mx-auto flex-1 flex flex-col display:none">
         <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full "></div>
         <!-- Game Details Section -->
-        <div id="gameDetailsSection"
-            class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6 flex flex-col lg:flex-row min-h-max">
+        <div id="gameDetailsSection" class="hidden bg-gray-800 p-6 rounded-lg shadow-lg my-6 flex flex-col lg:flex-row">
             <img id="gameCover" src="" alt="Game Cover"
-                class="w-full lg:w-2/4 rounded-md mb-4 lg:mb-0 lg:mr-6 object-cover">
+                class="hidden w-full lg:w-2/4 rounded-md mb-4 lg:mb-0 lg:mr-6 object-cover">
             <div class="w-full">
-                <div class="flex justify-between items-center mb-6">
+                <div class="flex justify-between items-center mb-16">
                     <h1 id="gameName" class="text-4xl font-bold"></h1>
-                    <button id="wishlistButton"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:shadow-outline transition duration-300 ml-auto">
-                        Add to Wishlist
+                    <button id="wishlistButton" title="Adicionar à lista"
+                        class="group cursor-pointer outline-none hover:rotate-90 duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" viewBox="0 0 24 24"
+                            class="stroke-slate-400 fill-none group-hover:fill-slate-800 group-active:stroke-slate-200 group-active:fill-slate-600 group-active:duration-0 duration-300">
+                            <path
+                                d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+                                stroke-width="1.5"></path>
+                            <path d="M8 12H16" stroke-width="1.5"></path>
+                            <path d="M12 16V8" stroke-width="1.5"></path>
+                        </svg>
                     </button>
                 </div>
-                <p id="gameStoryline" class="mb-4"></p>
-                <p class="mb-4">Status: <span id="gameStatus" class="font-semibold"></span></p>
-                <p id="gameRating" class="mb-4"></p>
-                <!-- Description and External Links -->
-                <div id="gameExternalLinks" class="mt-4 flex flex-wrap gap-4">
-
-                </div>
+                <p id="gameRating" class="hidden bg-gray-700 p-4 rounded-lg shadow w-full my-4"></p>
+                <p id="gameGenres" class="hidden bg-gray-700 p-4 rounded-lg shadow w-full my-4"></p>
+                <p id="gamePlatforms" class="hidden bg-gray-700 p-4 rounded-lg shadow w-full my-4"></p>
+                <p id="gameReleaseDate" class="hidden bg-gray-700 p-4 rounded-lg shadow w-full my-4"></p>
             </div>
         </div>
 
-        <!-- Critic Reviews
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-2xl font-bold mb-4">Critic Reviews</h2>
-            <div id="criticReviews" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Critic review cards will be dynamically added here -->
-        <!-- </div> -->
-        <!-- </div> -->
+        <!-- Game Storyline Section -->
+        <div id="game-storyline-section" class="hidden bg-gray-800 p-6 rounded-lg shadow-lg mb-6 relative w-full">
+            <h2 class="text-3xl font-bold mb-6 text-blue-400">Storyline</h2>
+            <p id="gameStoryline" class="mb-4"></p>
+        </div>
+
+        <!-- Game Videos Carousel -->
+        <div id="game-videos-carousel" class="hidden bg-gray-800 p-6 rounded-lg shadow-lg mb-6 relative w-full">
+            <h2 class="text-3xl font-bold mb-6 text-blue-400">Videos</h2>
+            <div id="gameVideos" class="relative overflow-hidden rounded-lg w-full px-8 pb-[56.25%]">
+                <!-- Videos sao inseridos dinamicamente -->
+            </div>
+            <button type="button" id="gameVideosCarousel_prev"
+                class="disabled:opacity-50 disabled:cursor-not-allowed absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                <span
+                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white hover:bg-gray-600 focus:outline-none">
+                    < </span>
+            </button>
+            <button type="button" id="gameVideosCarousel_next"
+                class="disabled:opacity-50 disabled:cursor-not-allowed absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                <span
+                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white hover:bg-gray-600 focus:outline-none">
+                    > </span>
+            </button>
+        </div>
+
+        <!-- Game External Links section-->
+        <div id="game-externalLinks-section" class="hidden bg-gray-800 p-6 rounded-lg shadow-lg mb-6 relative w-full">
+            <h2 class="text-3xl font-bold mb-6 text-blue-400">External Links</h2>
+            <div id="gameExternalLinks" class="mt-4 flex flex-wrap gap-4"></div>
+        </div>
 
         <!-- Similar Games Carousel -->
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-2xl font-bold mb-4">Similar Games</h2>
-            <div id="similarGamesCarousel" class="relative">
-                <button id="prevButton"
-                    class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-l-md hover:bg-gray-600 focus:outline-none">‹</button>
-                <div id="similarGames" class="overflow-hidden flex gap-4">
-                    <!-- Similar game items will be dynamically added here -->
-                </div>
-                <button id="nextButton"
-                    class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-r-md hover:bg-gray-600 focus:outline-none">›</button>
+        <div id="similarGames-carousel" class="hidden bg-gray-800 p-6 rounded-lg shadow-lg mb-6 relative">
+            <h2 class="text-3xl font-bold mb-6 text-blue-400">Similar Games</h2>
+            <div id="similarGames" class="relative flex gap-4 overflow-x-auto scroll-pl-6">
+                <!-- Similar Games são inseridos dinamicamente aqui -->
             </div>
-        </div>
-
-        <!-- Game Videos -->
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-2xl font-bold mb-4">Videos</h2>
-            <div id="gameVideos" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <!-- Video iframes will be dynamically added here -->
-            </div>
-        </div>
-
-        <!-- Game Artworks -->
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-2xl font-bold mb-4">Artworks</h2>
-            <div id="gameArtworks" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <!-- Artwork images will be dynamically added here -->
-            </div>
-        </div>
-
-        <!-- Game Screenshots -->
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-            <h2 class="text-2xl font-bold mb-4">Screenshots</h2>
-            <div id="gameScreenshots" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <!-- Screenshot images will be dynamically added here -->
-            </div>
+            <button type="button" id="similarGamesCarousel_prev"
+                class="disabled:opacity-50 disabled:cursor-not-allowed absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                <span
+                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white hover:bg-gray-600 focus:outline-none">&lt;</span>
+            </button>
+            <button type="button" id="similarGamesCarousel_next"
+                class="disabled:opacity-50 disabled:cursor-not-allowed absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                <span
+                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white hover:bg-gray-600 focus:outline-none">&gt;</span>
+            </button>
         </div>
     </div>
 

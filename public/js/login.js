@@ -13,6 +13,8 @@ form.addEventListener("submit", async (event) => {
 async function sendLogin() {
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
+    const params = getQueryParams()
+    const redirectUrl = params.redirectUrl || '/games';
 
     if (verifyNullFields(email, password)) {
         try {
@@ -26,7 +28,7 @@ async function sendLogin() {
             const data = await response.json();
             // Verifica se a resposta do servidor foi bem-sucedida
             if (response.ok) {
-                window.location.href = '/games';
+                window.location.href = redirectUrl
             } else {
                 setMessage(data.message || 'Erro ao fazer login. Tente novamente.');
             }
@@ -42,4 +44,14 @@ async function sendLogin() {
 // Função para verificar se os campos estão preenchidos
 function verifyNullFields(email, password) {
     return email !== "" && password !== "";
+}
+
+// Função para obter parâmetros de consulta
+function getQueryParams() {
+    const params = {};
+    window.location.search.substring(1).split("&").forEach(pair => {
+        const [key, value] = pair.split("=");
+        params[decodeURIComponent(key)] = decodeURIComponent(value);
+    });
+    return params;
 }

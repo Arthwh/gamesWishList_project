@@ -3,8 +3,8 @@ import argon2 from 'argon2';
 import { randomUUID } from "node:crypto";
 
 
-// Função para criar a tabela de usuários
-function createUsersTable() {
+// Função para criar as tabelas
+function createTables() {
     //const queryDrop = `DROP TABLE IF EXISTS user`
     const query = `
         CREATE TABLE IF NOT EXISTS user (
@@ -18,6 +18,29 @@ function createUsersTable() {
             agree_terms INTEGER
         )
     `;
+
+    const listTableQuery = `
+        CREATE TABLE IF NOT EXISTS lists (
+            id TEXT PRIMARY KEY,
+            user_id TEXT UNIQUE,
+            empty INTEGER DEFAULT 1,
+            FOREIGN KEY(user_id) REFERENCES user(id)
+        )
+    `;
+
+    const gamesInListsTableQuery = `
+        CREATE TABLE IF NOT EXISTS games_in_lists (
+            id TEXT PRIMARY KEY,
+            list_id TEXT,
+            user_id TEXT,
+            game_id TEXT,
+            status TEXT,
+            date_added TEXT,
+            FOREIGN KEY(list_id) REFERENCES lists(id),
+            FOREIGN KEY(user_id) REFERENCES user(id)
+        )
+    `;
+
     // db.run(queryDrop, (err) => {
     //     if (err) {
     //         console.error('Erro ao excluir tabela de usuários:', err.message);
@@ -31,6 +54,22 @@ function createUsersTable() {
             console.error('Erro ao criar tabela de usuários:', err.message);
         } else {
             console.log('Tabela de usuários criada com sucesso.');
+        }
+    });
+
+    db.run(listTableQuery, (err) => {
+        if (err) {
+            console.error('Erro ao criar tabela de listas:', err.message);
+        } else {
+            console.log('Tabela de listas criada com sucesso.');
+        }
+    });
+
+    db.run(gamesInListsTableQuery, (err) => {
+        if (err) {
+            console.error('Erro ao criar tabela de jogos nas listas:', err.message);
+        } else {
+            console.log('Tabela de jogos nas listas criada com sucesso.');
         }
     });
 }
@@ -50,8 +89,8 @@ async function insertRootUser() {
 
 // Função para inicializar o banco de dados
 function init() {
-    createUsersTable();
-    insertRootUser();
+    createTables();
+    // insertRootUser();
 }
 
 init();

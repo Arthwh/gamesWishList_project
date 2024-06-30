@@ -33,7 +33,7 @@ export async function getAccessToken() {
 }
 
 export async function fetchGamesRepository(token, limit, offset, filterQuery) {
-    const body = `fields name, genres.name, platforms.abbreviation, release_dates.y, rating, cover.url, version_title;${filterQuery} limit ${limit}; offset ${offset};`
+    const body = `fields name, genres.name, platforms.abbreviation, first_release_date, rating, cover.url, version_title;${filterQuery} limit ${limit}; offset ${offset};`
     const response = await fetch('https://api.igdb.com/v4/games', {
         method: 'POST',
         headers: {
@@ -50,7 +50,7 @@ export async function fetchGamesRepository(token, limit, offset, filterQuery) {
 }
 
 export async function fetchTopRatedGamesRepository(token) {
-    const body = `fields name, cover.url, storyline; where category = 0 & platforms.generation >= 5 & version_title = null; sort rating_count desc; limit 4;`
+    const body = `fields name, cover.url, rating; where category = 0 & platforms.generation >= 5 & version_title = null; sort rating_count desc; limit 4;`
     const response = await fetch('https://api.igdb.com/v4/games', {
         method: 'POST',
         headers: {
@@ -101,8 +101,7 @@ export async function fetchAllPlatformsRepository(token, limit) {
 }
 
 export async function fetchGameDataRepository(token, id) {
-    const body = `fields name, summary, storyline, status, videos, genres.name, dlcs, external_games, involved_companies.company.name, websites.url, websites.trusted, first_release_date, rating, similar_games, platforms.abbreviation, release_dates.y, rating, cover.url, version_title; where id = ${id};`;
-    console.log("body: " + JSON.stringify(body))
+    const body = `fields name, summary, storyline, videos.video_id, genres.name, external_games.url, external_games.countries, websites.url, first_release_date, similar_games, platforms.abbreviation, rating, cover.url; where id = ${id};`;
     const response = await fetch('https://api.igdb.com/v4/games', {
         method: 'POST',
         headers: {
@@ -112,9 +111,26 @@ export async function fetchGameDataRepository(token, id) {
         body: body,
     })
     const data = await response.json();
-    console.log("data: " + JSON.stringify(data))
+    // console.log("data: " + JSON.stringify(data))
     if (!response.ok) {
         throw new Error('Failed to fetch games: ' + data[0]?.cause);
+    }
+    return data;
+}
+
+export async function fetchSimilarGamesRepository(token, ids) {
+    const body = `fields name, rating, cover.url; where id = (${ids});`;
+    const response = await fetch('https://api.igdb.com/v4/games', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Client-ID': clientId,
+        },
+        body: body,
+    })
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error('Failed to fetch similar games: ' + data[0]?.cause);
     }
     return data;
 }

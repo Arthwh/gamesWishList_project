@@ -99,7 +99,6 @@ function toggleCollapse(id) {
 
 // Carrega a lista de jogos com base na página, pesquisa e filtros
 async function loadGames(page, search, filter) {
-
     // Mostrar a mensagem de carregamento
     loadingMessage.style.display = 'block';
     gamesList.style.display = 'none';
@@ -107,7 +106,6 @@ async function loadGames(page, search, filter) {
     try {
         const response = await fetch(`/api/games?limit=${limitGamesPage}&page=${page}&search=${encodeURIComponent(search)}&filter=${encodeURIComponent(filter)}`);
         const data = await response.json();
-
         // Ocultar a mensagem de carregamento
         loadingMessage.style.display = 'none';
         gamesList.style.display = 'grid';
@@ -116,29 +114,25 @@ async function loadGames(page, search, filter) {
         if (Array.isArray(data) && data.length > 0) {
             data.forEach(async game => {
                 if (!game.version_title) { // Filtra para não mostrar versões diferentes do mesmo jogo
-                    const { gameGenres, gamePlatforms, gameReleases } = await transformData(game.genres, game.platforms, game.release_dates);
+                    const gameGenres = formatGenres(game.genres);
+                    const gamePlatforms = formatPlatforms(game.platforms);
+                    const releaseDate = formatReleaseDate(game.first_release_date)
                     var coverUrl = game.cover.url || '';
                     var coverEdited = coverUrl.replace("t_thumb", "t_cover_big")
                     const gameCard = `
-                    <div class="bg-gray-700 p-4 rounded-lg shadow-lg flex flex-col">
+                    <div class="bg-gray-700 p-4 rounded-lg shadow-lg flex flex-col hover:scale-105">
                         <h3 class="text-xl font-bold text-center">${game.name}</h3>
                         <p class="hidden">${game.id}</p>
                         <div class="shadow-lg bg-gray-500 rounded-lg p-2 mt-5 flex flex-col items-center h-full">
-                            <img src="${coverEdited}" alt="${game.name}" class="rounded-lg object-cover h-75 w-full mb-4">
+                            <a href="/games/info?id=${game.id}">
+                                <img src="${coverEdited}" alt="${game.name}" class="rounded-lg object-cover h-75 w-full my-4">
+                            </a>
                             <div class="text-gray-200 text-center p-2 h-full flex-grow flex flex-col">
                                 <p class="p-2">Rating: <b>${game.rating !== undefined ? game.rating.toFixed(2) : 'Rating não disponível'}</b></p>
-                                <p class="p-2">Lançamento: <b>${gameReleases}</b></p>
+                                <p class="p-2">Lançamento: <b>${releaseDate}</b></p>
                                 <p class="p-2">Gêneros: <b>${gameGenres}</b></p>
                                 <p class="p-2">Plataformas: <b>${gamePlatforms}</b></p>
                                 <div class="mt-4 flex justify-center space-x-4 mt-auto">
-                                    <button onclick="viewMoreInfo(${game.id})" class="relative cursor-pointer opacity-90 hover:opacity-100 transition-opacity p-[2px] bg-black rounded-[16px] bg-gradient-to-t from-[#1e3a8a] to-[#3b82f6] active:scale-95">
-                                        <span class="w-full h-full flex items-center gap-2 px-8 py-3 bg-[#B931FC] text-white rounded-[14px] bg-gradient-to-t from-[#1e40af] to-[#60a5fa]">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                                                <path
-                                                    d="M8 13V9m-2 2h4m5-2v.001M18 12v.001m4-.334v5.243a3.09 3.09 0 0 1-5.854 1.382L16 18a3.618 3.618 0 0 0-3.236-2h-1.528c-1.37 0-2.623.774-3.236 2l-.146.292A3.09 3.09 0 0 1 2 16.91v-5.243A6.667 6.667 0 0 1 8.667 5h6.666A6.667 6.667 0 0 1 22 11.667Z"
-                                                ></path>
-                                            </svg>Ver mais</span>
-                                    </button>
                                     <button title="Adicionar à lista" onclick="addToList(${game.id})" class="group cursor-pointer outline-none hover:rotate-90 duration-300">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -174,17 +168,29 @@ async function loadGames(page, search, filter) {
     }
 }
 
-// Formata os dados dos jogos para exibição nos cards
-async function transformData(genres, platforms, releases) {
-    try {
-        const gameGenres = genres?.map(genre => genre.name).filter(Boolean).join(', ') || "Não informado";
-        const gamePlatforms = platforms?.map(platform => platform.abbreviation).filter(Boolean).join(', ') || "Não informado";
-        const minReleaseYear = releases?.map(release => release.y).filter(Boolean).reduce((min, year) => Math.min(min, year), new Date().getFullYear()) || "Não informado";
-        return { gameGenres, gamePlatforms, gameReleases: minReleaseYear };
-    } catch (error) {
-        console.error('Erro ao transformar dados:', error);
-        return { gameGenres: "Não informado", gamePlatforms: "Não informado", gameReleases: "Não informado" };
+function formatGenres(genres) {
+    const gameGenres = genres?.map(genre => genre.name).filter(Boolean).join(', ') || null;
+    if (gameGenres) {
+        return gameGenres;
     }
+    return "Não informado"
+}
+
+function formatPlatforms(platforms) {
+    const gamePlatforms = platforms?.map(platform => platform.abbreviation).filter(Boolean).join(', ') || null;
+    if (gamePlatforms) {
+        return gamePlatforms;
+    }
+    return "Não informado"
+}
+
+function formatReleaseDate(releaseDate) {
+    if (releaseDate) {
+        const date = new Date(releaseDate * 1000);
+        const formattedDate = date.toLocaleDateString("pt-BR")
+        return formattedDate;
+    }
+    return "Não informado"
 }
 
 // Executa a busca de jogos com base na consulta
@@ -208,7 +214,6 @@ function filterGames() {
     activeFiltersList.innerHTML = ""
 
     if (selectedGenresid.length > 0) {
-        console.log("genresId: " + selectedGenresid)
         filterQuery += `& genres = (${selectedGenresid.join(',')})`;
         activeFiltersList.innerHTML += `<h3 class="text-gray-700"><b>Gêneros: <b></h3>`
         selectedGenresNames.forEach(genreName => {
@@ -216,7 +221,6 @@ function filterGames() {
         })
     }
     if (selectedPlatformsid.length > 0) {
-        console.log("platformsId: " + selectedPlatformsid)
         filterQuery += `& platforms = (${selectedPlatformsid.join(',')})`;
         activeFiltersList.innerHTML += `<h3 class="text-gray-700"><b>Plataformas: <b></h3>`
         selectedPlatformsNames.forEach(platformName => {
@@ -224,7 +228,6 @@ function filterGames() {
         })
     }
     if (activeFiltersList.innerHTML != "") {
-        console.log("active: " + activeFiltersList)
         document.getElementById("active-filters").classList.remove("hidden")
         currentPage = 1
         loadGames(currentPage, searchQuery, filterQuery)
@@ -259,12 +262,6 @@ function clearFilters() {
         checkbox.checked = false;
     });
     loadGames(currentPage, searchQuery, filterQuery)
-}
-
-//Funcao para redirecionar para uma view exclusiva de cada jogo
-function viewMoreInfo(gameId) {
-    window.location.href = `/games/info?id=${gameId}`
-    console.log("Ver mais informações para o jogo ID:", gameId);
 }
 
 //Funcao para adicionar o jogo a lista

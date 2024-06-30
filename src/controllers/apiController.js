@@ -1,10 +1,4 @@
-import { fetchGamesService, fetchGenresService, fetchPlatformsService, fetchTopRatedGamesService, fetchGameFullInfoService } from '../services/apiService.js';
-
-// Função utilitária para lidar com erros
-const handleErrors = (reply, error, errorMessage) => {
-    console.error(errorMessage, error);
-    return reply.status(500).send({ error: errorMessage + error.message });
-};
+import { fetchGamesService, fetchGenresService, fetchPlatformsService, fetchTopRatedGamesService, fetchGameFullInfoService, fetchSimilarGamesService } from '../services/apiService.js';
 
 // Rota para obter jogos
 export const getGames = async (request, reply) => {
@@ -62,6 +56,21 @@ export const getTopRatedGames = async (request, reply) => {
     try {
         const platforms = await fetchTopRatedGamesService();
         return reply.status(200).send(platforms);
+    } catch (error) {
+        return reply.status(500).send({ error: error.message });
+    }
+};
+
+// Rota para obter jogos mais avaliados
+export const getSimilarGames = async (request, reply) => {
+    try {
+        const ids = request.query.id;
+        const decodedIDs = decodeURIComponent(ids)
+        if (!decodedIDs) {
+            return reply.status(400).send({ error: 'Missing similar games id' });
+        }
+        const similarGames = await fetchSimilarGamesService(decodedIDs);
+        return reply.status(200).send(similarGames);
     } catch (error) {
         return reply.status(500).send({ error: error.message });
     }

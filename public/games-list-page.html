@@ -15,6 +15,7 @@
             <ul class="flex space-x-4">
                 <li><a href="/" class="text-white">Home</a></li>
                 <li><a href="/games" class="text-white">Games</a></li>
+                <li><a href="/games/list" class="text-white">My Games</a></li>
                 <li>
                     <button id="logoutLink"
                         class="group flex items-center justify-start w-11 h-8 bg-red-600 rounded-full cursor-pointer relative overflow-hidden transition-all duration-200 shadow-lg hover:w-32 hover:rounded-lg active:translate-x-1 active:translate-y-1">
@@ -46,7 +47,7 @@
         <!-- Barra de Pesquisa -->
         <div class="mb-6 flex items-center">
             <input type="text" id="search-bar" placeholder="Pesquisar jogos..."
-                class="w-full px-3 py-2 bg-gray-700 rounded-l-md text-white outline-none">
+                class="w-full px-3 py-2 bg-gray-800 rounded-l-md text-white outline-none focus:bg-gray-700">
             <button onclick="searchGames()"
                 class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 focus:outline-none focus:shadow-outline transition duration-300">
                 Pesquisar
@@ -57,7 +58,7 @@
         <div class="flex flex-1">
             <!-- Barra Lateral de Filtros -->
             <aside class="w-1/4 bg-gray-800 p-4 rounded-lg shadow-lg">
-                <h2 class="text-xl font-bold mb-4">Filtros</h2>
+                <h2 class="text-3xl font-bold mb-6 text-blue-400">Filtros</h2>
                 <div id="active-filters" class="bg-gray-400 p-4 mb-4 rounded-md hidden">
                     <h3 class="text-lg font-semibold mb-2">Filtros Ativos</h3>
                     <div id="active-filters-list" class="flex flex-wrap gap-2"></div>
@@ -94,12 +95,12 @@
 
             <!-- Lista de Jogos -->
             <main class="flex-1 bg-gray-800 p-4 rounded-lg shadow-lg ml-6">
-                <h2 id="searchResult" class="text-xl font-bold mb-5">Jogos</h2>
+                <h2 id="searchResult" class="text-3xl font-bold mb-6 text-blue-400">Jogos</h2>
                 <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full text-center"></div>
-                <div id="loading" class="text-center text-gray-200">
+                <div id="loading" class="my-4 text-center text-gray-200">
                     <p>Carregando jogos...</p>
                 </div>
-                <div id="games-list" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div id="games-list" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
                     <!-- Aqui serão inseridos os jogos dinamicamente -->
                 </div>
             </main>

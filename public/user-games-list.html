@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Game List</title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900 text-white flex flex-col">
+    <nav class="bg-gray-800 p-4 mb-6">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-white text-xl font-bold">Games WishList</a>
+            <ul class="flex space-x-4">
+                <li><a href="/" class="text-white">Home</a></li>
+                <li><a href="/games" class="text-white">Games</a></li>
+                <li><a href="/games/list" class="text-white">My Games</a></li>
+                <li><button id="logoutLink"
+                        class="group flex items-center justify-start w-11 h-8 bg-red-600 rounded-full cursor-pointer relative overflow-hidden transition-all duration-200 shadow-lg hover:w-32 hover:rounded-lg active:translate-x-1 active:translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-full transition-all duration-300 group-hover:justify-start group-hover:px-3">
+                            <svg class="w-4 h-4" viewBox="0 0 512 512" fill="white">
+                                <path
+                                    d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div
+                            class="absolute right-5 transform translate-x-full opacity-0 text-white text-lg font-semibold transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                            Logout</div>
+                    </button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-6 min-h-screen flex-1 h-screen bg-gray-800 rounded-lg shadow-lg">
+
+        <div class="flex justify-between items-center my-4">
+            <h1 class="text-3xl font-bold mb-6">My games</h1>
+            <button id="shareListButton" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                Share
+            </button>
+        </div>
+
+        <div id="gameList" class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="hidden justify-center text-center items-center">Você não tem nenhum jogo na lista...</div>
+            <!-- Game cards will be injected here -->
+        </div>
+
+        <!-- Add/Edit Game Modal -->
+        <div id="gameModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+            <div class="bg-gray-700 p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h2 id="gameModalTitle" class="text-2xl font-bold mb-4">Adicionar Jogo</h2>
+                <input type="text" id="gameNameInput" placeholder="Nome do Jogo" class="w-full p-2 mb-4 rounded">
+                <input type="url" id="gameImageUrlInput" placeholder="URL da Imagem" class="w-full p-2 mb-4 rounded">
+                <select id="gameStatusInput" class="w-full p-2 mb-4 rounded">
+                    <option value="want-to-play">Quero Jogar</option>
+                    <option value="playing">Jogando</option>
+                    <option value="played">Já Joguei</option>
+                </select>
+                <div class="flex justify-end">
+                    <button id="saveGameButton"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
+                        Salvar
+                    </button>
+                    <button id="cancelGameButton"
+                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="bg-gray-800 text-white text-center py-4 mt-6">
+        <p>&copy; 2024 Games WishList. All rights reserved.</p>
+    </footer>
+
+    <script src="/js/utils.js"></script>
+    <script src="/js/user-games-list.js"></script>
+</body>
+
+
+</html>

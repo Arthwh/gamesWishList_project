@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 
 // Criar uma instância do Fastify
 const app = fastify({
-  // Opções adicionais podem ser configuradas aqui, como logger: true para ativar o registro de logs
+  // logger: true
 });
 
 // Registrar o plugin Fastify Static para servir arquivos estáticos

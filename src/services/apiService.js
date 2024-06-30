@@ -1,4 +1,4 @@
-import { fetchGamesRepository, fetchAllGenresRepository, fetchAllPlatformsRepository, fetchTopRatedGamesRepository, fetchGameDataRepository, getAccessToken } from "../repositories/apiRepository.js";
+import { fetchGamesRepository, fetchAllGenresRepository, fetchAllPlatformsRepository, fetchTopRatedGamesRepository, fetchGameDataRepository, getAccessToken, fetchSimilarGamesRepository } from "../repositories/apiRepository.js";
 
 export async function fetchGamesService(limit, offset, search, filter) {
     try {
@@ -80,8 +80,23 @@ export async function fetchGameFullInfoService(id) {
             throw new Error('Failed to fetch game data: token missing');
         }
 
-        const gameData = fetchGameDataRepository(token, id);
+        const gameData = await fetchGameDataRepository(token, id);
         return gameData;
+    } catch (error) {
+        console.error(error.message);
+        throw error;
+    }
+}
+
+export async function fetchSimilarGamesService(ids) {
+    try {
+        const token = await getAccessToken();
+        if (!token) {
+            throw new Error('Failed to fetch similar games data: token missing');
+        }
+        
+        const similarGamesData = await fetchSimilarGamesRepository(token, ids);
+        return similarGamesData;
     } catch (error) {
         console.error(error.message);
         throw error;
