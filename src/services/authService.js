@@ -7,7 +7,7 @@ const key = process.env.SECRET_KEY;
 
 export async function authenticateUser(email, password) {
     try {
-        if (!email || !password){
+        if (!email || !password) {
             throw new Error("Email and password are required");
         }
         const user = await findUserByEmail(email);
@@ -24,11 +24,12 @@ export async function authenticateUser(email, password) {
 
 function generateToken(user) {
     const payload = {
-        id: user.id,
+        user_id: user.user_id,
         username: user.username,
         email: user.email,
+        list_id: user.list_id,
     };
-    
+
     const token = jwt.sign(payload, key, { expiresIn: '1h' });
     return token;
 }

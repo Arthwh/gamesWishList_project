@@ -7,7 +7,7 @@ import homeRoutes from './routes/homeRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import apiRoutes from './routes/apiRoutes.js';
 import authRoutes from './routes/authRoutes.js';
-import gamesRoutes from './routes/gamesRoutes.js';
+import gamesRoutes from './routes/gameRoutes.js';
 
 // Obter o caminho do arquivo atual e seu diretório
 const __filename = fileURLToPath(import.meta.url);

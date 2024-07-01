@@ -60,7 +60,7 @@ async function loadGenres() {
         });
     } catch (error) {
         console.error('Erro ao buscar generos:', error);
-        setMessage('Erro ao buscar generos:', error);
+        setErrorMessage(error, 'Erro ao buscar generos');
     }
 }
 
@@ -83,7 +83,7 @@ async function loadPlatforms() {
         });
     } catch (error) {
         console.error('Erro ao buscar plataformas:', error);
-        setMessage('Erro ao buscar plataformas:', error);
+        setErrorMessage(error, 'Erro ao buscar plataformas');
     }
 }
 
@@ -102,7 +102,7 @@ async function loadGames(page, search, filter) {
     // Mostrar a mensagem de carregamento
     loadingMessage.style.display = 'block';
     gamesList.style.display = 'none';
-
+    const gamesInList = await getUserGamesList()
     try {
         const response = await fetch(`/api/games?limit=${limitGamesPage}&page=${page}&search=${encodeURIComponent(search)}&filter=${encodeURIComponent(filter)}`);
         const data = await response.json();
@@ -117,40 +117,28 @@ async function loadGames(page, search, filter) {
                     const gameGenres = formatGenres(game.genres);
                     const gamePlatforms = formatPlatforms(game.platforms);
                     const releaseDate = formatReleaseDate(game.first_release_date)
-                    var coverUrl = game.cover.url || '';
-                    var coverEdited = coverUrl.replace("t_thumb", "t_cover_big")
-                    const gameCard = `
-                    <div class="bg-gray-700 p-4 rounded-lg shadow-lg flex flex-col hover:scale-105">
-                        <h3 class="text-xl font-bold text-center">${game.name}</h3>
-                        <p class="hidden">${game.id}</p>
-                        <div class="shadow-lg bg-gray-500 rounded-lg p-2 mt-5 flex flex-col items-center h-full">
+                    const coverUrl = formatImgURL(game.cover.url)
+                    const element = document.createElement('div');
+                    element.className = "bg-zinc-700 rounded-lg shadow-lg flex flex-col"
+                    element.innerHTML = `
+                        <div class="relative">
                             <a href="/games/info?id=${game.id}">
-                                <img src="${coverEdited}" alt="${game.name}" class="rounded-lg object-cover h-75 w-full my-4">
+                                <img src="${coverUrl}" alt="${game.name}" class="mb-4 rounded-t-lg object-cover min-h-75 w-full hover:opacity-65">
                             </a>
-                            <div class="text-gray-200 text-center p-2 h-full flex-grow flex flex-col">
-                                <p class="p-2">Rating: <b>${game.rating !== undefined ? game.rating.toFixed(2) : 'Rating não disponível'}</b></p>
-                                <p class="p-2">Lançamento: <b>${releaseDate}</b></p>
-                                <p class="p-2">Gêneros: <b>${gameGenres}</b></p>
-                                <p class="p-2">Plataformas: <b>${gamePlatforms}</b></p>
-                                <div class="mt-4 flex justify-center space-x-4 mt-auto">
-                                    <button title="Adicionar à lista" onclick="addToList(${game.id})" class="group cursor-pointer outline-none hover:rotate-90 duration-300">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="50px"
-                                            height="50px"
-                                            viewBox="0 0 24 24"
-                                            class="stroke-slate-400 fill-none group-hover:fill-slate-800 group-active:stroke-slate-200 group-active:fill-slate-600 group-active:duration-0 duration-300">
-                                            <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke-width="1.5"></path>
-                                            <path d="M8 12H16" stroke-width="1.5"></path>
-                                            <path d="M12 16V8" stroke-width="1.5"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
+                            <button onclick="wishlist(this)" data-game-id="${game.id}" class="absolute top-2 right-2 outline-none duration-300"></button>
                         </div>
-                    </div>
+                        <div class="text-gray-200 p-4 h-full flex-grow flex flex-col">
+                            <h3 class="pl-2 text-2xl font-bold mb-4">${game.name}</h3>
+                            <p class="p-2">Rating: <b>${game.rating !== undefined ? game.rating.toFixed(2) : 'Rating não disponível'}</b></p>
+                            <p class="p-2">Lançamento: <b>${releaseDate}</b></p>
+                            <p class="p-2">Gêneros: <b>${gameGenres}</b></p>
+                            <p class="p-2">Plataformas: <b>${gamePlatforms}</b></p>
+                        </div>
                     `;
-                    gamesList.innerHTML += gameCard;
+                    gamesList.appendChild(element);
+                    const isAdded = await verifyIfGameIsAdded(gamesInList, game.id);
+                    const wishlistButton = element.querySelector("button[data-game-id]");
+                    setWishlistButton(wishlistButton, isAdded);
                 }
             });
             searchResult.innerHTML = searchQuery ? `Resultados para: <i>${searchQuery}</i>` : 'Top games (by rating)';
@@ -164,7 +152,7 @@ async function loadGames(page, search, filter) {
         document.getElementById('next-page').disabled = (data.length < limitGamesPage);
     } catch (error) {
         console.error('Erro ao buscar jogos:', error);
-        setMessage('Erro ao buscar jogos: ' + error);
+        setErrorMessage(error, 'Erro ao buscar jogos');
     }
 }
 
@@ -262,9 +250,4 @@ function clearFilters() {
         checkbox.checked = false;
     });
     loadGames(currentPage, searchQuery, filterQuery)
-}
-
-//Funcao para adicionar o jogo a lista
-function addToList(gameId) {
-    console.log("Adicionar à lista o jogo ID:", gameId);
 }

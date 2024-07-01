@@ -1,4 +1,4 @@
-import { fetchGamesService, fetchGenresService, fetchPlatformsService, fetchTopRatedGamesService, fetchGameFullInfoService, fetchSimilarGamesService } from '../services/apiService.js';
+import { fetchGamesService, fetchGenresService, fetchPlatformsService, fetchTopRatedGamesService, fetchGameFullInfoService, fetchGamesByIdService } from '../services/apiService.js';
 
 // Rota para obter jogos
 export const getGames = async (request, reply) => {
@@ -62,14 +62,14 @@ export const getTopRatedGames = async (request, reply) => {
 };
 
 // Rota para obter jogos mais avaliados
-export const getSimilarGames = async (request, reply) => {
+export const getGamesById = async (request, reply) => {
     try {
         const ids = request.query.id;
         const decodedIDs = decodeURIComponent(ids)
         if (!decodedIDs) {
-            return reply.status(400).send({ error: 'Missing similar games id' });
+            return reply.status(400).send({ error: 'Missing games id' });
         }
-        const similarGames = await fetchSimilarGamesService(decodedIDs);
+        const similarGames = await fetchGamesByIdService(decodedIDs);
         return reply.status(200).send(similarGames);
     } catch (error) {
         return reply.status(500).send({ error: error.message });

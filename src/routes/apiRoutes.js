@@ -1,4 +1,4 @@
-import { getGames, getGenres, getPlatforms, getTopRatedGames, getGameFullInfo, getSimilarGames } from '../controllers/apiController.js';
+import { getGames, getGenres, getPlatforms, getTopRatedGames, getGameFullInfo, getGamesById } from '../controllers/apiController.js';
 
 async function apiRoutes(fastify, options) {
   fastify.get('/api/games', getGames);
@@ -6,7 +6,7 @@ async function apiRoutes(fastify, options) {
   fastify.get('/api/platforms/all', getPlatforms);
   fastify.get('/api/games/info', getGameFullInfo);
   fastify.get('/api/games/toprated', getTopRatedGames);
-  fastify.get('/api/games/similargames', getSimilarGames);
+  fastify.get('/api/games/by_id', getGamesById);
 }
 
 export default apiRoutes;

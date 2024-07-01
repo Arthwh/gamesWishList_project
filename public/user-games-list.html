@@ -4,18 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Game List</title>
+    <title>User Game List - Games WishList</title>
     <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/aditional.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-900 text-white flex flex-col">
-    <nav class="bg-gray-800 p-4 mb-6">
+<body class="backgroundPattern text-zinc-200 flex flex-col min-h-screen">
+    <nav class="bg-zinc-800 p-4 mb-6">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-white text-xl font-bold">Games WishList</a>
+            <a href="/" class="text-zinc-200 text-xl font-bold">Games WishList</a>
             <ul class="flex space-x-4">
-                <li><a href="/" class="text-white">Home</a></li>
-                <li><a href="/games" class="text-white">Games</a></li>
-                <li><a href="/games/list" class="text-white">My Games</a></li>
+                <li><a href="/" class="text-zinc-200">Home</a></li>
+                <li><a href="/games" class="text-zinc-200">Games</a></li>
+                <li><a href="/games/list/page" class="text-zinc-200">My Games</a></li>
                 <li><button id="logoutLink"
                         class="group flex items-center justify-start w-11 h-8 bg-red-600 rounded-full cursor-pointer relative overflow-hidden transition-all duration-200 shadow-lg hover:w-32 hover:rounded-lg active:translate-x-1 active:translate-y-1">
                         <div
@@ -27,58 +28,65 @@
                             </svg>
                         </div>
                         <div
-                            class="absolute right-5 transform translate-x-full opacity-0 text-white text-lg font-semibold transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                            class="absolute right-5 transform translate-x-full opacity-0 text-zinc-200 text-lg font-semibold transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                             Logout</div>
                     </button></li>
             </ul>
         </div>
     </nav>
 
-    <main class="container mx-auto p-6 min-h-screen flex-1 h-screen bg-gray-800 rounded-lg shadow-lg">
 
-        <div class="flex justify-between items-center my-4">
-            <h1 class="text-3xl font-bold mb-6">My games</h1>
-            <button id="shareListButton" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                Share
-            </button>
+    <main class="container mx-auto flex-1">
+        <div id="loading" class="hidden my-4 text-center text-gray-200">
+            <p>Carregando jogos...</p>
         </div>
+        <div id="emptyListMessage" class="hidden justify-center text-center items-center">Você não tem nenhum jogo na
+            lista...</div>
+        <div id="gamesDiv" class="hidden p-6 flex-1 justify-center bg-zinc-800 rounded-lg shadow-lg">
+            <div class="flex justify-between items-center mt-4">
+                <h1 class="text-3xl font-bold mb-6 text-zinc-200">My games</h1>
+                <button id="shareListButton"
+                    class="bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid min-w-56 py-2 px-4 rounded transition duration-300">
+                    Share list
+                </button>
+            </div>
 
-        <div id="gameList" class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div class="hidden justify-center text-center items-center">Você não tem nenhum jogo na lista...</div>
-            <!-- Game cards will be injected here -->
-        </div>
+            <div id="gameList" class="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                <!-- Game cards will be injected here -->
+            </div>
 
-        <!-- Add/Edit Game Modal -->
-        <div id="gameModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-            <div class="bg-gray-700 p-6 rounded-lg shadow-lg max-w-md w-full">
-                <h2 id="gameModalTitle" class="text-2xl font-bold mb-4">Adicionar Jogo</h2>
-                <input type="text" id="gameNameInput" placeholder="Nome do Jogo" class="w-full p-2 mb-4 rounded">
-                <input type="url" id="gameImageUrlInput" placeholder="URL da Imagem" class="w-full p-2 mb-4 rounded">
-                <select id="gameStatusInput" class="w-full p-2 mb-4 rounded">
-                    <option value="want-to-play">Quero Jogar</option>
-                    <option value="playing">Jogando</option>
-                    <option value="played">Já Joguei</option>
-                </select>
-                <div class="flex justify-end">
-                    <button id="saveGameButton"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
-                        Salvar
-                    </button>
-                    <button id="cancelGameButton"
-                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                        Cancelar
-                    </button>
+            <!-- Edit Game Modal -->
+            <div id="gameModal"
+                class="hidden fixed inset-0 bg-zinc-800 bg-opacity-75 flex items-center justify-center z-20">
+                <div class="bg-zinc-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+                    <h2 id="gameModalTitle" class="text-2xl font-bold mb-4">Editar status</h2>
+                    <select id="gameStatusInput" class="w-full p-2 mb-4 rounded text-zinc-950">
+                        <option value="want-to-play">Quero Jogar</option>
+                        <option value="playing">Jogando</option>
+                        <option value="played">Já Joguei</option>
+                    </select>
+                    <div class="flex justify-end">
+                        <button id="saveGameButton"
+                            class="bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid py-2 px-4 rounded mr-2">
+                            Salvar
+                        </button>
+                        <button id="gameModalCloseButton"
+                            class="bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid py-2 px-4 rounded">
+                            Cancelar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+
     </main>
-    <footer class="bg-gray-800 text-white text-center py-4 mt-6">
+    <footer class="bg-zinc-800 text-zinc-200 text-center py-4 mt-6">
         <p>&copy; 2024 Games WishList. All rights reserved.</p>
     </footer>
-
-    <script src="/js/utils.js"></script>
-    <script src="/js/user-games-list.js"></script>
 </body>
 
+<script src="/js/utils.js"></script>
+<script src="/js/statusMessage.js"></script>
+<script src="/js/user-games-list.js"></script>
 
 </html>

@@ -6,47 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Games WishList</title>
     <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/aditional.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-900 text-white">
-    <nav class="bg-gray-800 p-4">
+<body class="backgroundPattern text-zinc-200 flex flex-col min-h-screen">
+    <nav class="bg-zinc-800 p-4">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-white text-xl font-bold">Games WishList</a>
+            <a href="/" class="text-zinc-200 text-xl font-bold">Games WishList</a>
             <ul class="flex space-x-4">
-                <li><a href="/" class="text-white">Home</a></li>
-                <li><a href="/login" class="text-white">Login</a></li>
+                <li><a href="/" class="text-zinc-200">Home</a></li>
+                <li><a href="/login" class="text-zinc-200">Login</a></li>
             </ul>
         </div>
     </nav>
-    <div class="flex h-screen justify-center items-center">
-        <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
-            <h2 class="text-2xl font-bold mb-4 text-center text-blue-400">Login to Games WishList</h2>
-            <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full "></div>
+    <div class="flex-1 flex mx-auto h-screen justify-center items-center">
+        <div class="bg-zinc-800 p-8 rounded-lg shadow-lg w-96">
+            <h2 class="text-2xl font-bold mb-4 text-center text-zinc-200">Login to Games WishList</h2>
             <form class="space-y-6" id="form">
                 <div>
                     <label for="email" class="block mb-1">Email</label>
                     <input type="text" id="email" name="email"
-                        class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none"
+                        class="w-full px-3 py-2 bg-zinc-700 rounded-md text-zinc-200 outline-none"
                         placeholder="Enter your email">
                 </div>
                 <div>
                     <label for="password" class="block mb-1">Password</label>
                     <input type="password" id="password" name="password"
-                        class="w-full px-3 py-2 bg-gray-700 rounded-md text-white outline-none"
+                        class="w-full px-3 py-2 bg-zinc-700 rounded-md text-zinc-200 outline-none"
                         placeholder="Enter your password">
                 </div>
                 <button type="submit"
-                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">Login</button>
+                    class="bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid w-full 0 py-2 px-4 rounded-md transition duration-300">Login</button>
             </form>
-            <p class="text-center mt-4">Don't have an account? <a href="/user/create" class="text-blue-400">Create one
+            <p class="mt-4 w-full text-center">Don't have an account? <a href="/user/create"
+                    class="text-zinc-200 hover:text-sky-600 text-right">Create
+                    one
                     here</a></p>
         </div>
     </div>
-    <footer class="bg-gray-800 text-white text-center py-4">
+    <footer class="bg-zinc-800 text-zinc-200 text-center py-4">
         <p>&copy; 2024 Games WishList. All rights reserved.</p>
     </footer>
 </body>
-<script src="js/login.js"></script>
+
 <script src="js/utils.js"></script>
+<script src="/js/statusMessage.js"></script>
+<script src="js/login.js"></script>
 
 </html>

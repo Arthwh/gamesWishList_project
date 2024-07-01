@@ -3,33 +3,60 @@ import { User } from '../models/userModel.js'
 import { randomUUID } from "node:crypto";
 
 export async function createUser(userData) {
+    const uuid = randomUUID();
+    const listId = randomUUID();
+    const userSql = `
+        INSERT INTO user (user_id, name, username, email, password, birthdate, receive_updates, agree_terms)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    const listSql = `
+        INSERT INTO lists (list_id, user_id, empty)
+        VALUES (?, ?, ?)
+    `;
+    const userParams = [uuid, userData.name, userData.username, userData.email, userData.password, userData.birthdate, userData.newsletter, userData.terms];
+    const listParams = [listId, uuid, 1]; // Inicialmente, a lista está vazia
+
     try {
-        const uuid = randomUUID();
-        const sql = `
-            INSERT INTO user (id, name, username, email, password, birthdate, receive_updates, agree_terms)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-        const params = [uuid, userData.name, userData.username, userData.email, userData.password, userData.birthdate, userData.newsletter, userData.terms];
         await new Promise((resolve, reject) => {
-            db.run(sql, params, (err) => {
-                if (err) {
-                    console.error('Error creating user:', err.message);
-                    reject('Error creating user: ' + err.message);
-                    return;
-                }
-                resolve();
+            db.serialize(() => {
+                db.run('BEGIN TRANSACTION');
+                db.run(userSql, userParams, (err) => {
+                    if (err) {
+                        db.run('ROLLBACK');
+                        console.error('Error creating user:', err.message);
+                        reject('Error creating user: ' + err.message);
+                        return;
+                    }
+                    db.run(listSql, listParams, (err) => {
+                        if (err) {
+                            db.run('ROLLBACK');
+                            console.error('Error creating list:', err.message);
+                            reject('Error creating list: ' + err.message);
+                            return;
+                        }
+                        db.run('COMMIT', (err) => {
+                            if (err) {
+                                db.run('ROLLBACK');
+                                console.error('Error committing transaction:', err.message);
+                                reject('Error committing transaction: ' + err.message);
+                                return;
+                            }
+                            resolve();
+                        });
+                    });
+                });
             });
         });
-        return { message: "User created successfully" };
+        return { message: "User and list created successfully" };
     } catch (error) {
-        console.error('Erro ao criar usuário: ', error.message);
+        console.error('Error in transaction: ', error.message);
         throw error;
     }
 }
 
 export async function findUserByEmail(email) {
     try {
-        const sql = 'SELECT * FROM user WHERE email = ?';
+        const sql = 'SELECT * FROM user u INNER JOIN lists l WHERE u.user_id = l.user_id AND email = ?';
         const rows = await new Promise((resolve, reject) => {
             db.all(sql, [email], (err, rows) => {
                 if (err) {

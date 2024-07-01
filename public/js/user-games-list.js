@@ -1,85 +1,166 @@
-// Sample game list data
-const gameList = [
-    { id: 1, name: "Game 1", imageUrl: "https://via.placeholder.com/150", status: "want-to-play" },
-    { id: 2, name: "Game 2", imageUrl: "https://via.placeholder.com/150", status: "playing" },
-    { id: 3, name: "Game 3", imageUrl: "https://via.placeholder.com/150", status: "played" },
-    { id: 3, name: "Game 3", imageUrl: "https://via.placeholder.com/150", status: "played" },
-    { id: 3, name: "Game 3", imageUrl: "https://via.placeholder.com/150", status: "played" },
-    { id: 3, name: "Game 3", imageUrl: "https://via.placeholder.com/150", status: "played" },
-];
+// Seleção dos elementos do DOM que serão manipulados
+const gameListContainer = document.getElementById("gameList");
+const emptyListMessage = document.getElementById("emptyListMessage")
+const gamesDiv = document.getElementById("gamesDiv")
+const loading = document.getElementById("loading")
+const gameModal = document.getElementById("gameModal")
+const gameModalTitle = document.getElementById("gameModalTitle")
+const gameStatusInput = document.getElementById("gameStatusInput")
+const saveGameButton = document.getElementById("saveGameButton")
+const gameModalCloseButton = document.getElementById("gameModalCloseButton")
 
-document.addEventListener("DOMContentLoaded", function () {
-    renderGameList();
-    document.getElementById("cancelGameButton").addEventListener("click", () => document.getElementById("gameModal").classList.add("hidden"));
+var gamesRemaining = ""
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const gamesInList = await getUserGamesList()
+    if (gamesInList) {
+        loading.classList.remove("hidden")
+        const gamesId = gamesInList?.map(game => game.game_id).filter(Boolean).join(', ') || null;
+        gamesRemaining = gamesId.split(',').map(id => id.trim()).filter(Boolean);
+        if (gamesId) {
+            const userGamesData = await getGamesById(gamesId)
+            if (userGamesData) {
+                renderGameList(userGamesData, gamesInList);
+                loading.classList.add("hidden")
+                gamesDiv.classList.remove("hidden")
+                gameModalCloseButton.addEventListener("click", () => {
+                    gameModal.classList.add("hidden")
+                })
+            }
+        }
+    } else {
+        emptyListMessage.classList.remove("hidden")
+    }
     document.getElementById("shareListButton").addEventListener("click", shareList);
 });
 
-function renderGameList() {
-    const gameListContainer = document.getElementById("gameList");
-    gameListContainer.innerHTML = '';
+function verifyGamesRemaining() {
+    if (gamesRemaining.length === 0) {
+        emptyListMessage.classList.remove("hidden");
+        gamesDiv.classList.add("hidden");
+    }
+}
 
-    gameList.forEach(game => {
+function removeGameIdFromRemaining(gameId) {
+    const index = gamesRemaining.indexOf(gameId.toString());
+    if (index > -1) {
+        gamesRemaining.splice(index, 1);
+    }
+}
+
+function renderGameList(gamesList, gamesInList) {
+    gamesList.forEach(game => {
+        const status = gamesInList.find(games => games.game_id == game.id).status;
+        const formattedURL = formatImgURL(game.cover.url);
         const gameCard = document.createElement('div');
-        gameCard.className = "game-card bg-gray-700 p-4 rounded-lg shadow";
+        gameCard.className = "game-card bg-zinc-700 rounded-lg shadow w-full relative";
+        gameCard.id = `gameCard_${game.id}`;
+        gameCard.setAttribute("data-status", status)
         gameCard.innerHTML = `
-            <img class="w-full h-40 object-cover rounded mb-2" src="${game.imageUrl}" alt="${game.name}">
-            <h3 class="text-xl font-bold">${game.name}</h3>
-            <p class="text-gray-400 mb-2">Status: ${game.status}</p>
+            <a class="block relative overflow-hidden" href="/games/info?id=${game.id}">
+                <img class="object-cover w-full min-h-88 hover:opacity-60 rounded-t-lg" src="${formattedURL}" alt="${game.name}">
+            </a>
             <div class="flex justify-between">
-                <button onclick="editGame(${game.id})" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Editar</button>
-                <button onclick="deleteGame(${game.id})" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Excluir</button>
+                <div class="flex flex-col p-4">
+                    <h3 class="text-xl font-bold mb-4">${game.name}</h3>
+                    <p id="status_${game.id}" class=" text-gray-400">Status: <b>${status || 'Não disponível'}</b></p>
+                </div>
+                <div class="relative mt-2">
+                    <button onclick="toggleMenu(${game.id})" class="text-white focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6h.01M12 12h.01M12 18h.01" />
+                        </svg>
+                    </button>
+                    <div id="dropdown_${game.id}" class="hidden w-56 rounded-l-lg shadow-lg z-10 absolute right-0 mt-2 bg-zinc-800 text-white">
+                        <button class="block px-4 py-2 text-left w-full hover:bg-gray-600" onclick="editStatusFromGame(${game.id})">Edit Status</button>
+                        <button class="block px-4 py-2 text-left w-full hover:bg-gray-600" onclick="removeGameFromList(${game.id})">Remove from wishlist</button>
+                    </div>
+                </div>
             </div>
         `;
         gameListContainer.appendChild(gameCard);
     });
 }
 
-function saveNewGame() {
-    const newGame = {
-        id: gameList.length + 1,
-        name: document.getElementById("gameNameInput").value,
-        imageUrl: document.getElementById("gameImageUrlInput").value,
-        status: document.getElementById("gameStatusInput").value,
-    };
-    gameList.push(newGame);
-    renderGameList();
-    document.getElementById("gameModal").classList.add("hidden");
-}
-
-function editGame(gameId) {
-    const game = gameList.find(g => g.id === gameId);
-    if (game) {
-        document.getElementById("gameModalTitle").textContent = "Editar Jogo";
-        document.getElementById("gameNameInput").value = game.name;
-        document.getElementById("gameImageUrlInput").value = game.imageUrl;
-        document.getElementById("gameStatusInput").value = game.status;
-        document.getElementById("saveGameButton").onclick = () => saveEditedGame(gameId);
-        document.getElementById("gameModal").classList.remove("hidden");
+async function removeGameFromList(gameId) {
+    if (await removeGameFromWishlist(gameId)) {
+        setSuccessfulMessage("Game removed successfully from wishlist", "Wishlist")
+        document.getElementById(`gameCard_${gameId}`).remove();
+        removeGameIdFromRemaining(gameId)
+        verifyGamesRemaining()
     }
 }
 
-function saveEditedGame(gameId) {
-    const gameIndex = gameList.findIndex(g => g.id === gameId);
-    if (gameIndex !== -1) {
-        gameList[gameIndex].name = document.getElementById("gameNameInput").value;
-        gameList[gameIndex].imageUrl = document.getElementById("gameImageUrlInput").value;
-        gameList[gameIndex].status = document.getElementById("gameStatusInput").value;
-        renderGameList();
-        document.getElementById("gameModal").classList.add("hidden");
+async function editStatusFromGame(gameId) {
+    const status = document.getElementById(`gameCard_${gameId}`).getAttribute("data-status");
+    gameStatusInput.value = status
+    saveGameButton.addEventListener("click", async () => {
+        const statusSelected = gameStatusInput.value;
+        if (await updateGameStatus(gameId, statusSelected)) {
+            setSuccessfulMessage("Game status updated successfully", "Wishlist")
+            document.getElementById(`gameCard_${gameId}`).setAttribute("data-status", statusSelected);
+            const statusElement = document.getElementById("status_" + gameId)
+            statusElement.innerHTML = `Status: <b>${statusSelected}</b>`
+            gameModal.classList.add("hidden");
+        }
+    })
+    toggleMenu(gameId)
+    gameModal.classList.toggle("hidden")
+}
+
+function toggleMenu(gameId) {
+    const dropdown = document.getElementById("dropdown_" + gameId)
+    dropdown.classList.toggle("hidden")
+}
+
+async function updateGameStatus(gameId, status) {
+    try {
+        const response = await fetch('/games/list/edit/status', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ gameId, status }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            console.log("game " + gameId + " status updated");
+            return true;
+        } else {
+            setErrorMessage(data.message || "Undefined", 'Erro ao editar status do jogo');
+            return false;
+        }
+    } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        setErrorMessage(error, 'Erro ao enviar requisição');
     }
 }
 
-function deleteGame(gameId) {
-    const gameIndex = gameList.findIndex(g => g.id === gameId);
-    if (gameIndex !== -1) {
-        gameList.splice(gameIndex, 1);
-        renderGameList();
+async function shareList() {
+    var shareableLink = ""
+    try {
+        const response = await fetch('/games/list/listid');
+        const data = await response.json();
+        if (response.ok) {
+            if (data.listId) {
+                shareableLink = window.location.origin + "/games/share?list=" + encodeURIComponent(gameList);
+            } else {
+                throw new Error("Erro ao obter o id da lista.")
+            }
+        } else {
+            setErrorMessage(data.message || "Undefined", 'Erro ao obter o id da lista');
+            return false;
+        }
+    } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        setErrorMessage(error, 'Erro ao enviar requisição');
     }
-}
-
-function shareList() {
-    const shareableLink = window.location.origin + "/share?list=" + btoa(JSON.stringify(gameList));
-    prompt("Copie este link para compartilhar sua lista:", shareableLink);
+    if (shareableLink !== "") {
+        setSuccessfulMessage("Link de compartilhamento gerado com sucesso!", "Share wishlist")
+        setTimeout(() => {
+            prompt("Copie este link para compartilhar sua lista: ", shareableLink);
+        }, 10);
+    }
 }
 
 

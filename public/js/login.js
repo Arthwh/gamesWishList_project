@@ -30,14 +30,14 @@ async function sendLogin() {
             if (response.ok) {
                 window.location.href = redirectUrl
             } else {
-                setMessage(data.message || 'Erro ao fazer login. Tente novamente.');
+                setErrorMessage(data.message || "undefined", 'Erro ao fazer login');
             }
         } catch (error) {
             console.error('Erro ao enviar requisição:', error);
-            setMessage('Erro ao enviar requisição. Tente novamente.');
+            setErrorMessage(error, 'Erro ao enviar requisição');
         }
     } else {
-        setMessage("Preencha todos os campos!");
+        setErrorMessage("É necessário que todos os campos estejam preenchidos para fazer login", "Preencha todos os campos!");
     }
 }
 

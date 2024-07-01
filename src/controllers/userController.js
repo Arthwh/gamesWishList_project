@@ -4,9 +4,9 @@ export const getNewAccountPage = async (request, reply) => {
     return reply.sendFile('new-account-page.html');
 };
 
-export async function createUser(req, reply) {
+export async function createUser(request, reply) {
     try {
-        const userData = req.body;
+        const userData = request.body;
         await createUserService(userData);
         reply.status(200).send({ message: 'User created successfully' });
     } catch (error) {
@@ -14,24 +14,4 @@ export async function createUser(req, reply) {
     }
 }
 
-// export async function getUserItemsController(req, reply) {
-//     try {
-//         const userId = req.params.id;
-//         const items = await getUserItems(userId);
-//         reply.send(items);
-//     } catch (error) {
-//         reply.status(500).send({ error: error.message });
-//     }
-// }
-
-// export async function addUserItemController(req, reply) {
-//     try {
-//         const userId = req.params.id;
-//         const item = req.body;
-//         await addItemToUser(userId, item);
-//         reply.send({ message: 'Item added to user list' });
-//     } catch (error) {
-//         reply.status(500).send({ error: error.message });
-//     }
-// }
 

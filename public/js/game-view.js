@@ -38,10 +38,16 @@ var contTotalVideos = 0
 
 // Inicializa a página ao carregar o DOM
 document.addEventListener('DOMContentLoaded', async () => {
-    loadGameData();
-    wishlistButton.addEventListener("click", () => {
-        addToList(gameId);
-    });
+    if (!gameId) {
+        console.error("ID parameter is missing")
+        window.location.href = "/games"
+        return
+    }
+    wishlistButton.setAttribute("data-game-id", gameId)
+    const gamesInList = await getUserGamesList()
+    const isAdded = await verifyIfGameIsAdded(gamesInList, gameId)
+    setWishlistButton(wishlistButton, isAdded)
+    await loadGameData();
 });
 
 async function loadGameData() {
@@ -52,17 +58,18 @@ async function loadGameData() {
             throw new Error(data.error)
         }
         if (Array.isArray(data) && data.length > 0) {
-            // console.log("dados: " + JSON.stringify(data))
             //Obtem, formata e seta os games similares
-            await getSimilarGames(data[0].similar_games)
-
+            const similarGamesData = await getGamesById(data[0].similar_games)
+            if (similarGamesData) {
+                formatAndSetSimilarGames(similarGamesData)
+            }
             loadingElement.classList.add("hidden")
             mainContainer.classList.remove("display:none")
             await formatAndSetGameInfo(data)
         }
     } catch (error) {
         console.error('Erro ao buscar dados do jogo:', error);
-        setMessage(error);
+        setErrorMessage(error, "Erro ao buscar dados do jogo");
     }
 }
 
@@ -91,10 +98,6 @@ async function formatAndSetGameInfo(gameData) {
     formatAndSetStoryline(gameData[0].summary, gameData[0].storyline);
     //Formata e atribui os videos
     formatAndSetVideos(gameData[0].videos)
-}
-
-function formatImgURL(url) {
-    return url.replace("t_thumb", "t_cover_big")
 }
 
 function formatAndSetGenres(genres) {
@@ -132,7 +135,7 @@ function formatExternalLinks(gameWebsites) {
     gameWebsites.forEach(website => {
         const siteName = extractSiteName(website.url);
         if (siteName) {
-            const linkHTML = `<a target="_blank" rel="noopener noreferrer" href="${website.url}" class="hover:bg-gray-600 m-2 p-2 bg-gray-700 rounded">${siteName}</a>`;
+            const linkHTML = `<a target="_blank" rel="noopener noreferrer" href="${website.url}" class="bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid m-2 p-2 rounded">${siteName}</a>`;
             gameExternalLinksElement.insertAdjacentHTML('beforeend', linkHTML);
         }
     });
@@ -220,40 +223,22 @@ function showPrevVideo() {
     }
 }
 
-async function getSimilarGames(similarGames) {
-    if (!similarGames || similarGames.length === 0) {
-        return
-    }
-    try {
-        const response = await fetch(`/api/games/similargames?id=${encodeURIComponent(similarGames)}`);
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error)
-        }
-        if (Array.isArray(data) && data.length > 0) {
-            formatAndSetSimilarGames(data)
-        }
-    } catch (error) {
-        console.error('Erro ao buscar dados dos jogos similares:', error);
-        // setMessage(error);
-    }
-}
-
 function formatAndSetSimilarGames(similarGames) {
     similarGamesCarousel.classList.remove("hidden");
     similarGames.forEach(game => {
         if (game.cover && game.name) {
             const formatedURL = formatImgURL(game.cover.url);
             const element = document.createElement('div');
-            element.className = "bg-gray-700 p-4 rounded-lg shadow min-w-56 lg:min-w-60 xl:min-w-64 will-change-scroll";
+            element.className = "bg-zinc-700 rounded-lg shadow-lg min-w-56 lg:min-w-60 xl:min-w-64 will-change-scroll";
             element.innerHTML = `
-                <a class="block relative rounded overflow-hidden" href="/games/info?id=${game.id}">
-                    <img class="object-cover w-full h-72 xl:h-96" src="${formatedURL}" alt="${game.name}">
-                    <div class="mt-4">
-                        <h3 class="text-xl font-bold">${game.name}</h3>
+                    <a class="block relative rounded-t-lg overflow-hidden" href="/games/info?id=${game.id}">
+                        <img class="object-cover w-full h-72 xl:h-96 hover:opacity-65" src="${formatedURL}" alt="${game.name}">
+                    </a>
+                    <div class="mt-2 p-4">
+                        <h3 class="text-xl font-bold mb-2">${game.name}</h3>
                         <p class="text-gray-400">Rating: <b>${game.rating?.toFixed(2) || 'Rating não disponível'}</b></p>
                     </div>
-                </a>
+                
             `;
             similarGamesElement.appendChild(element);
         }
@@ -285,9 +270,4 @@ function formatAndSetSimilarGames(similarGames) {
         carouselSimilarGamesNext.disabled = similarGamesElement.scrollRight === 0;
         carouselSimilarGamesNext.disabled = similarGamesElement.scrollLeft >= (similarGamesElement.scrollWidth - similarGamesElement.clientWidth);
     });
-}
-
-//Funcao para adicionar o jogo a lista
-function addToList(gameId) {
-    console.log("Adicionar à lista o jogo ID:", gameId);
 }

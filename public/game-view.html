@@ -6,17 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Details - Games WishList</title>
     <link href="/css/style.css" rel="stylesheet">
-    <link href="/css/game-view.css" rel="stylesheet">
+    <link href="/css/aditional.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-900 text-white flex flex-col h-screen">
-    <nav class="bg-gray-800 p-4 mb-6">
+<body class="backgroundPattern text-zinc-200 flex flex-col min-h-screen">
+    <nav class="bg-zinc-800 p-4 mb-6">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-white text-xl font-bold">Games WishList</a>
+            <a href="/" class="text-zinc-200 text-xl font-bold">Games WishList</a>
             <ul class="flex space-x-4">
-                <li><a href="/" class="text-white">Home</a></li>
-                <li><a href="/games" class="text-white">Games</a></li>
-                <li><a href="/games/list" class="text-white">My Games</a></li>
+                <li><a href="/" class="text-zinc-200">Home</a></li>
+                <li><a href="/games" class="text-zinc-200">Games</a></li>
+                <li><a href="/games/list/page" class="text-zinc-200">My Games</a></li>
                 <li><button id="logoutLink"
                         class="group flex items-center justify-start w-11 h-8 bg-red-600 rounded-full cursor-pointer relative overflow-hidden transition-all duration-200 shadow-lg hover:w-32 hover:rounded-lg active:translate-x-1 active:translate-y-1">
                         <div
@@ -28,102 +28,97 @@
                             </svg>
                         </div>
                         <div
-                            class="absolute right-5 transform translate-x-full opacity-0 text-white text-lg font-semibold transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                            class="absolute right-5 transform translate-x-full opacity-0 text-zinc-200 text-lg font-semibold transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                             Logout</div>
                     </button></li>
             </ul>
         </div>
     </nav>
 
-    <div id="loading" class="z-40 h-full w-full text-gray-200">
+    <div id="loading" class="z-40 h-full w-full text-zinc-200">
         <p class="justify-center text-center items-center">Carregando dados do jogo...</p>
     </div>
 
-    <div id="mainContainer" class="container mx-auto flex-1 flex flex-col display:none">
-        <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full "></div>
+    <div id="mainContainer"
+        class="container flex-col display:none flex-1 flex h-screen justify-center mx-auto display-none">
         <!-- Game Details Section -->
-        <div id="gameDetailsSection" class="hidden bg-gray-800 p-6 rounded-lg shadow-lg my-6 flex flex-col lg:flex-row">
-            <img id="gameCover" src="" alt="Game Cover"
-                class="hidden w-full lg:w-2/4 rounded-md mb-4 lg:mb-0 lg:mr-6 object-cover">
+        <div id="gameDetailsSection" class="hidden bg-zinc-800 p-6 rounded-lg shadow-lg my-6 flex flex-col lg:flex-row">
+            <div class="relative w-full lg:w-2/4 mr-10">
+                <img id="gameCover" src="" alt="Game Cover" class="w-full rounded-md mb-4 lg:mb-0 object-cover">
+                <button id="wishlistButton" onclick="wishlist(this)"
+                    class="absolute top-2 right-2 text-white rounded-full p-2 outline-none duration-300">
+                </button>
+            </div>
+
             <div class="w-full">
-                <div class="flex justify-between items-center mb-16">
-                    <h1 id="gameName" class="text-4xl font-bold"></h1>
-                    <button id="wishlistButton" title="Adicionar à lista"
-                        class="group cursor-pointer outline-none hover:rotate-90 duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" viewBox="0 0 24 24"
-                            class="stroke-slate-400 fill-none group-hover:fill-slate-800 group-active:stroke-slate-200 group-active:fill-slate-600 group-active:duration-0 duration-300">
-                            <path
-                                d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
-                                stroke-width="1.5"></path>
-                            <path d="M8 12H16" stroke-width="1.5"></path>
-                            <path d="M12 16V8" stroke-width="1.5"></path>
-                        </svg>
-                    </button>
+                <div class="flex justify-between items-center mb-10">
+                    <h1 id="gameName" class="pl-3 text-4xl font-bold"></h1>
                 </div>
-                <p id="gameRating" class="hidden bg-gray-700 p-4 rounded-lg shadow w-full my-4"></p>
-                <p id="gameGenres" class="hidden bg-gray-700 p-4 rounded-lg shadow w-full my-4"></p>
-                <p id="gamePlatforms" class="hidden bg-gray-700 p-4 rounded-lg shadow w-full my-4"></p>
-                <p id="gameReleaseDate" class="hidden bg-gray-700 p-4 rounded-lg shadow w-full my-4"></p>
+                <p id="gameRating" class="hidden p-4 rounded-lg shadow w-full my-2"></p>
+                <p id="gameGenres" class="hidden p-4 rounded-lg shadow w-full my-2"></p>
+                <p id="gamePlatforms" class="hidden p-4 rounded-lg shadow w-full my-2"></p>
+                <p id="gameReleaseDate" class="hidden p-4 rounded-lg shadow w-full my-2"></p>
             </div>
         </div>
 
         <!-- Game Storyline Section -->
-        <div id="game-storyline-section" class="hidden bg-gray-800 p-6 rounded-lg shadow-lg mb-6 relative w-full">
-            <h2 class="text-3xl font-bold mb-6 text-blue-400">Storyline</h2>
+        <div id="game-storyline-section" class="hidden bg-zinc-800 p-6 rounded-lg shadow-lg mb-6 relative w-full">
+            <h2 class="text-3xl font-bold mb-6 text-zinc-200">Storyline</h2>
             <p id="gameStoryline" class="mb-4"></p>
         </div>
 
         <!-- Game Videos Carousel -->
-        <div id="game-videos-carousel" class="hidden bg-gray-800 p-6 rounded-lg shadow-lg mb-6 relative w-full">
-            <h2 class="text-3xl font-bold mb-6 text-blue-400">Videos</h2>
+        <div id="game-videos-carousel" class="hidden bg-zinc-800 p-6 rounded-lg shadow-lg mb-6 relative w-full">
+            <h2 class="text-3xl font-bold mb-6 text-zinc-200">Videos</h2>
             <div id="gameVideos" class="relative overflow-hidden rounded-lg w-full px-8 pb-[56.25%]">
                 <!-- Videos sao inseridos dinamicamente -->
             </div>
             <button type="button" id="gameVideosCarousel_prev"
                 class="disabled:opacity-50 disabled:cursor-not-allowed absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
                 <span
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white hover:bg-gray-600 focus:outline-none">
+                    class="border-zinc-100 border border-solid inline-flex items-center justify-center w-10 h-10 rounded-full bg-zinc-900 text-zinc-200 hover:bg-zinc-600 focus:outline-none">
                     < </span>
             </button>
             <button type="button" id="gameVideosCarousel_next"
                 class="disabled:opacity-50 disabled:cursor-not-allowed absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
                 <span
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white hover:bg-gray-600 focus:outline-none">
+                    class="border-zinc-100 border border-solid inline-flex items-center justify-center w-10 h-10 rounded-full bg-zinc-900 text-zinc-200 hover:bg-zinc-600 focus:outline-none">
                     > </span>
             </button>
         </div>
 
         <!-- Game External Links section-->
-        <div id="game-externalLinks-section" class="hidden bg-gray-800 p-6 rounded-lg shadow-lg mb-6 relative w-full">
-            <h2 class="text-3xl font-bold mb-6 text-blue-400">External Links</h2>
+        <div id="game-externalLinks-section" class="hidden bg-zinc-800 p-6 rounded-lg shadow-lg mb-6 relative w-full">
+            <h2 class="text-3xl font-bold mb-6 text-zinc-200">External Links</h2>
             <div id="gameExternalLinks" class="mt-4 flex flex-wrap gap-4"></div>
         </div>
 
         <!-- Similar Games Carousel -->
-        <div id="similarGames-carousel" class="hidden bg-gray-800 p-6 rounded-lg shadow-lg mb-6 relative">
-            <h2 class="text-3xl font-bold mb-6 text-blue-400">Similar Games</h2>
+        <div id="similarGames-carousel" class="hidden bg-zinc-800 p-6 rounded-lg shadow-lg mb-6 relative">
+            <h2 class="text-3xl font-bold mb-6 text-zinc-200">Similar Games</h2>
             <div id="similarGames" class="relative flex gap-4 overflow-x-auto scroll-pl-6">
                 <!-- Similar Games são inseridos dinamicamente aqui -->
             </div>
             <button type="button" id="similarGamesCarousel_prev"
                 class="disabled:opacity-50 disabled:cursor-not-allowed absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
                 <span
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white hover:bg-gray-600 focus:outline-none">&lt;</span>
+                    class="border-zinc-100 border border-solid inline-flex items-center justify-center w-10 h-10 rounded-full bg-zinc-900 text-zinc-200 hover:bg-zinc-600 focus:outline-none">&lt;</span>
             </button>
             <button type="button" id="similarGamesCarousel_next"
                 class="disabled:opacity-50 disabled:cursor-not-allowed absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
                 <span
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white hover:bg-gray-600 focus:outline-none">&gt;</span>
+                    class="border-zinc-100 border border-solid inline-flex items-center justify-center w-10 h-10 rounded-full bg-zinc-900 text-zinc-200 hover:bg-zinc-600 focus:outline-none">&gt;</span>
             </button>
         </div>
     </div>
 
-    <footer class="bg-gray-800 text-white text-center py-4 mt-6">
+    <footer class="bg-zinc-800 text-zinc-200 text-center py-4 mt-6">
         <p>&copy; 2024 Games WishList. All rights reserved.</p>
     </footer>
 </body>
 
 <script src="/js/utils.js"></script>
+<script src="/js/statusMessage.js"></script>
 <script src="/js/game-view.js"></script>
 
 </html>

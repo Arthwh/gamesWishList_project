@@ -38,19 +38,22 @@ async function sendUserData() {
                 const data = await response.json();
 
                 if (response.status === 200) {
-                    window.location.href = '/login';
+                    setSuccessfulMessage("Account created successfully", "Account")
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000)
                 } else {
-                    setMessage(data.message);
+                    setErrorMessage(data.message || "undefined", "Erro ao criar conta");
                 }
             } catch (error) {
                 console.error('Erro ao enviar requisição:', error);
-                setMessage('Erro ao enviar requisição: ' + error.message);
+                setErrorMessage(error.message || "undefined", 'Erro ao enviar requisição');
             }
         } else {
-            setMessage("Senha e confirmação de senha não coincidem");
+            setErrorMessage("Senha e confirmação de senha não coincidem", "Erro ao criar conta");
         }
     } else {
-        setMessage("Preencha todos os campos!");
+        setErrorMessage("Preencha todos os campos!", "Erro ao criar conta");
     }
 }
 

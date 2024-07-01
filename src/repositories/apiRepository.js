@@ -50,7 +50,7 @@ export async function fetchGamesRepository(token, limit, offset, filterQuery) {
 }
 
 export async function fetchTopRatedGamesRepository(token) {
-    const body = `fields name, cover.url, rating; where category = 0 & platforms.generation >= 5 & version_title = null; sort rating_count desc; limit 4;`
+    const body = `fields name, cover.url, rating; where category = 0 & platforms.generation >= 5 & version_title = null; sort rating_count desc; limit 8;`
     const response = await fetch('https://api.igdb.com/v4/games', {
         method: 'POST',
         headers: {
@@ -111,15 +111,14 @@ export async function fetchGameDataRepository(token, id) {
         body: body,
     })
     const data = await response.json();
-    // console.log("data: " + JSON.stringify(data))
     if (!response.ok) {
         throw new Error('Failed to fetch games: ' + data[0]?.cause);
     }
     return data;
 }
 
-export async function fetchSimilarGamesRepository(token, ids) {
-    const body = `fields name, rating, cover.url; where id = (${ids});`;
+export async function fetchGamesByIdRepository(token, ids) {
+    const body = `fields name, rating, cover.url; where id = (${ids}); limit 100;`;
     const response = await fetch('https://api.igdb.com/v4/games', {
         method: 'POST',
         headers: {
@@ -130,9 +129,7 @@ export async function fetchSimilarGamesRepository(token, ids) {
     })
     const data = await response.json();
     if (!response.ok) {
-        throw new Error('Failed to fetch similar games: ' + data[0]?.cause);
+        throw new Error('Failed to fetch games by id: ' + data[0]?.cause);
     }
     return data;
 }
-
-

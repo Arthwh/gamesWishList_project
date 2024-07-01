@@ -1,0 +1,62 @@
+/* Tira a scrollbar */
+#similarGames {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/* Forma o padrao do background */
+.backgroundPattern {
+    width: 100%;
+    height: 100%;
+    --color: rgba(114, 114, 114, 0.3);
+    background-color: #191a1a;
+    background-image: linear-gradient(0deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent),
+        linear-gradient(90deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent);
+    background-size: 55px 55px;
+}
+
+/* Estilizacao do container de notificacoes */
+.notifications-container {
+    padding: 20px;
+    margin: 20px;
+    position: fixed;
+    bottom: 40px;
+    right: 20px;
+    z-index: 999; /* Garante que fique sobre outros elementos */
+}
+
+.close-button {
+    margin-top: 0;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    margin-left: 20px;
+}
+
+.error-alert {
+    border: 2px solid darkred;
+    padding: 20px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.success-alert {
+    border: 2px solid #155724;
+    padding: 20px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.success-prompt-heading {
+    margin-bottom: 4px;
+    font-size:large;
+    font-weight: bold;
+}
+
+.error-prompt-heading {
+    margin-bottom: 4px;
+    font-weight: bold;
+    font-size:large;
+}

@@ -6,19 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Games List - Games WishList</title>
     <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/aditional.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-900 text-white flex flex-col h-screen">
-    <nav class="bg-gray-800 p-4 mb-6">
+<body class="backgroundPattern text-zinc-200 flex flex-col h-screen">
+    <nav class="bg-zinc-800 p-4 mb-6">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-white text-xl font-bold">Games WishList</a>
+            <a href="/" class="text-zinc-100 text-xl font-bold">Games WishList</a>
             <ul class="flex space-x-4">
-                <li><a href="/" class="text-white">Home</a></li>
-                <li><a href="/games" class="text-white">Games</a></li>
-                <li><a href="/games/list" class="text-white">My Games</a></li>
+                <li><a href="/" class="text-zinc-100">Home</a></li>
+                <li><a href="/games" class="text-zinc-100">Games</a></li>
+                <li><a href="/games/list/page" class="text-zinc-100">My Games</a></li>
                 <li>
                     <button id="logoutLink"
-                        class="group flex items-center justify-start w-11 h-8 bg-red-600 rounded-full cursor-pointer relative overflow-hidden transition-all duration-200 shadow-lg hover:w-32 hover:rounded-lg active:translate-x-1 active:translate-y-1">
+                        class="group flex items-center justify-start w-11 h-8 bg-red-500 rounded-full cursor-pointer relative overflow-hidden transition-all duration-200 shadow-lg hover:w-32 hover:rounded-lg active:translate-x-1 active:translate-y-1">
                         <div
                             class="flex items-center justify-center w-full transition-all duration-300 group-hover:justify-start group-hover:px-3">
                             <svg class="w-4 h-4" viewBox="0 0 512 512" fill="white">
@@ -28,7 +29,7 @@
                             </svg>
                         </div>
                         <div
-                            class="absolute right-5 transform translate-x-full opacity-0 text-white text-lg font-semibold transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                            class="absolute right-5 transform translate-x-full opacity-0 text-zinc-100 text-lg font-semibold transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
                             Logout</div>
                     </button>
                 </li>
@@ -37,9 +38,9 @@
     </nav>
 
 
-    <div class="container mx-auto flex-1 flex flex-col">
+    <div class="container mx-auto flex-1 flex flex-col min-h-screen">
         <!-- Banner de Novidades -->
-        <div class="bg-blue-700 p-6 rounded-lg shadow-lg mb-6 text-center">
+        <div class="bg-zinc-900 p-6 rounded-lg shadow-lg mb-6 text-center">
             <h1 class="text-4xl font-bold">Novidades</h1>
             <p class="text-lg">Confira os últimos lançamentos e novidades do mundo dos jogos!</p>
         </div>
@@ -47,9 +48,9 @@
         <!-- Barra de Pesquisa -->
         <div class="mb-6 flex items-center">
             <input type="text" id="search-bar" placeholder="Pesquisar jogos..."
-                class="w-full px-3 py-2 bg-gray-800 rounded-l-md text-white outline-none focus:bg-gray-700">
+                class="w-full px-3 py-2 bg-zinc-800 rounded-l-md text-zinc-200 outline-none focus:bg-zinc-700">
             <button onclick="searchGames()"
-                class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 focus:outline-none focus:shadow-outline transition duration-300">
+                class="px-4 py-2 bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid rounded-r-md focus:outline-none focus:shadow-outline transition duration-300">
                 Pesquisar
             </button>
         </div>
@@ -57,13 +58,13 @@
         <!-- Conteúdo Principal -->
         <div class="flex flex-1">
             <!-- Barra Lateral de Filtros -->
-            <aside class="w-1/4 bg-gray-800 p-4 rounded-lg shadow-lg">
-                <h2 class="text-3xl font-bold mb-6 text-blue-400">Filtros</h2>
-                <div id="active-filters" class="bg-gray-400 p-4 mb-4 rounded-md hidden">
+            <aside class="w-1/4 bg-zinc-800 p-4 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold mb-6 text-zinc-100">Filtros</h2>
+                <div id="active-filters" class="bg-zinc-400 p-4 mb-4 rounded-md hidden">
                     <h3 class="text-lg font-semibold mb-2">Filtros Ativos</h3>
                     <div id="active-filters-list" class="flex flex-wrap gap-2"></div>
                     <button onclick="clearFilters()" id="clear-filters-btn"
-                        class="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md focus:outline-none w-full">
+                        class="mt-2 bg-red-500 hover:bg-red-500 text-zinc-100 px-4 py-2 rounded-md focus:outline-none w-full">
                         Limpar Filtros
                     </button>
                 </div>
@@ -71,7 +72,7 @@
                 <!-- Gênero -->
                 <div class="mb-4">
                     <button
-                        class="w-full bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline"
+                        class="w-full bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
                         onclick="toggleCollapse('collapse-genre')">Gênero</button>
                     <div id="collapse-genre" class="hidden mt-2">
                         <!-- Generos inseridos dinamicamente -->
@@ -81,7 +82,7 @@
                 <!-- Plataforma -->
                 <div class="mb-4">
                     <button
-                        class="w-full bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:shadow-outline"
+                        class="w-full bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
                         onclick="toggleCollapse('collapse-platform')">Plataforma</button>
                     <div id="collapse-platform" class="hidden mt-2">
                         <!-- Plataformas inseridas dinamicamente -->
@@ -89,14 +90,13 @@
                 </div>
 
                 <button
-                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
+                    class="w-full bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid py-2 px-4 rounded-md transition duration-300"
                     onclick="filterGames()">Aplicar Filtros</button>
             </aside>
 
             <!-- Lista de Jogos -->
-            <main class="flex-1 bg-gray-800 p-4 rounded-lg shadow-lg ml-6">
-                <h2 id="searchResult" class="text-3xl font-bold mb-6 text-blue-400">Jogos</h2>
-                <div id="message" class="hidden my-4 py-2 px-4 rounded-lg w-full text-center"></div>
+            <main class="flex-1 bg-zinc-800 p-4 rounded-lg shadow-lg ml-6">
+                <h2 id="searchResult" class="text-3xl font-bold mb-6 text-zinc-100">Jogos</h2>
                 <div id="loading" class="my-4 text-center text-gray-200">
                     <p>Carregando jogos...</p>
                 </div>
@@ -107,20 +107,20 @@
         </div>
         <div class="flex justify-center mt-4" id="pagination">
             <button id="previous-page"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-l focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+                class="bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid font-bold py-2 px-4 rounded-l focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
             <span id="page-number" class="flex items-center px-4">1</span>
             <button id="next-page"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">Próximo</button>
+                class="bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid font-bold py-2 px-4 rounded-r focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">Próximo</button>
         </div>
-
     </div>
-
-
-    <footer class="bg-gray-800 text-white text-center py-4 mt-6">
+    <footer class="bg-zinc-800 text-zinc-200 text-center py-4 mt-6">
         <p>&copy; 2024 Games WishList. All rights reserved.</p>
     </footer>
 </body>
-<script src="js/games-list-page.js"></script>
+
 <script src="js/utils.js"></script>
+<script src="/js/statusMessage.js"></script>
+<script src="js/games-list-page.js"></script>
+
 
 </html>
