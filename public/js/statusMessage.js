@@ -1,6 +1,11 @@
+var messageSetElement = ""
+
 function setErrorMessage(message, title) {
     if (!message || !title) {
         return
+    }
+    if (messageSetElement) {
+        messageSetElement.remove();
     }
     const notification = document.createElement('div');
     notification.className = 'notifications-container';
@@ -23,6 +28,7 @@ function setErrorMessage(message, title) {
             </div>
     `;
     document.body.appendChild(notification);
+    messageSetElement = notification;
     setTimeout(() => {
         notification.remove();
     }, 4000);
@@ -34,6 +40,9 @@ function setErrorMessage(message, title) {
 function setSuccessfulMessage(message, title) {
     if (!message || !title) {
         return
+    }
+    if (messageSetElement) {
+        messageSetElement.remove();
     }
     const notification = document.createElement('div');
     notification.className = 'notifications-container';
@@ -56,6 +65,7 @@ function setSuccessfulMessage(message, title) {
             </div>
     `;
     document.body.appendChild(notification);
+    messageSetElement = notification;
     setTimeout(() => {
         notification.remove();
     }, 4000);

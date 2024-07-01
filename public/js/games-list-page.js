@@ -1,6 +1,8 @@
 // Seleção dos elementos do DOM que serão manipulados
 const gamesList = document.getElementById('games-list');
 const loadingMessage = document.getElementById('loading');
+const loadingFirstMessage = document.getElementById('loadingFirst');
+const mainContainer = document.getElementById("mainContainer")
 const searchResult = document.getElementById("searchResult")
 const genresFilter = document.getElementById("collapse-genre")
 const platformsFilter = document.getElementById("collapse-platform")
@@ -17,74 +19,151 @@ const fixedFilterQuery = "category = 0 & version_title = null"
 var currentPage = 1
 var filterQuery = "category = 0 & aggregated_rating > 90 & platforms.generation >= 5 & version_title = null"
 var searchQuery = ""
+var gamesInList = ""
+var firstLoad = true;
 
 // Inicializa a página ao carregar o DOM
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadGenres();
-    await loadPlatforms();
-    await loadGames(currentPage, searchQuery, filterQuery);
+    var page = currentPage;
+    var filter = filterQuery;
+    var search = searchQuery
+
+
+    await loadData(page, search, filter)
     addPaginationListeners();
+    firstLoad = false;
 });
 
 // Adiciona listeners para os botões de paginação
 function addPaginationListeners() {
     document.getElementById('next-page').addEventListener('click', async () => {
         currentPage += 1;
-        await loadGames(currentPage, searchQuery, filterQuery);
+        await loadData(currentPage, searchQuery, filterQuery);
     });
 
     document.getElementById('previous-page').addEventListener('click', async () => {
         if (currentPage > 1) {
             currentPage -= 1;
-            await loadGames(currentPage, searchQuery, filterQuery);
+            await loadData(currentPage, searchQuery, filterQuery);
         }
     });
 }
 
-// Carrega a lista de gêneros e preenche o filtro
-async function loadGenres() {
+async function loadData(page, search, filter) {
+    if (firstLoad) {
+        mainContainer.style.display = 'none'
+        loadingFirstMessage.style.display = 'block';
+        loadingMessage.style.display = 'none';
+    }
+    else {
+        gamesList.style.display = 'none';
+        loadingMessage.style.display = 'block';
+        loadingFirstMessage.style.display = 'none';
+    }
+
     try {
-        const response = await fetch(`/api/genres/all?limit=${limitGenres}`);
+        const response = await fetch(`/games/data?limit=${limitGamesPage}&page=${page}&search=${encodeURIComponent(search)}&filter=${encodeURIComponent(filter)}&firstload=${firstLoad}`);
         const data = await response.json();
-        genresFilter.innerHTML = '';
-        data.forEach(genre => {
-            if (genre.name) {
-                const genreCard = `
+
+        if (data.gamesData) {
+            const games = data.gamesData;
+            const listOfGames = data.listOfGames;
+
+            // const userData = data.user
+            if (firstLoad) {
+                const platforms = data.platformsData;
+                const genres = data.genresData;
+                await loadGenres(genres);
+                await loadPlatforms(platforms);
+                await loadGames(games, listOfGames)
+            } else {
+                await loadGames(games, listOfGames)
+            }
+            mainContainer.style.display = 'flex'
+            gamesList.style.display = 'grid';
+            loadingFirstMessage.style.display = 'none';
+            loadingMessage.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Erro ao buscar jogos:', error);
+        setErrorMessage(error, 'Erro ao buscar jogos');
+    }
+}
+
+async function loadGames(games, listOfGames) {
+    gamesList.innerHTML = '';
+
+    if (Array.isArray(games) && games.length > 0) {
+        games.forEach(async game => {
+            if (!game.version_title) { // Filtra para não mostrar versões diferentes do mesmo jogo
+                const gameGenres = formatGenres(game.genres);
+                const gamePlatforms = formatPlatforms(game.platforms);
+                const releaseDate = formatReleaseDate(game.first_release_date)
+                const coverUrl = formatImgURL(game.cover.url)
+                const element = document.createElement('div');
+                element.className = "bg-zinc-700 rounded-lg shadow-lg flex flex-col"
+                element.innerHTML = `
+                        <div class="relative">
+                            <a href="/games/info?id=${game.id}">
+                                <img src="${coverUrl}" alt="${game.name}" class="mb-4 rounded-t-lg object-cover min-h-75 w-full hover:opacity-65">
+                            </a>
+                            <button onclick="wishlist(this)" data-game-id="${game.id}" data-game-name="${game.name}" class="absolute top-2 right-2 outline-none duration-300"></button>
+                        </div>
+                        <div class="text-gray-200 p-4 h-full flex-grow flex flex-col">
+                            <h3 class="pl-2 text-2xl font-bold mb-4">${game.name}</h3>
+                            <p class="p-2">Rating: <b>${game.rating !== undefined ? game.rating.toFixed(2) : 'Rating não disponível'}</b></p>
+                            <p class="p-2">Lançamento: <b>${releaseDate}</b></p>
+                            <p class="p-2">Gêneros: <b>${gameGenres}</b></p>
+                            <p class="p-2">Plataformas: <b>${gamePlatforms}</b></p>
+                        </div>
+                    `;
+                gamesList.appendChild(element);
+                const isAdded = await verifyIfIsAdded(listOfGames, game.id)
+                const wishlistButton = element.querySelector("button[data-game-id]");
+                setWishlistButton(wishlistButton, isAdded);
+            }
+        });
+        searchResult.innerHTML = searchQuery ? `Resultados para: <i>${searchQuery}</i>` : 'Top games (by rating)';
+    } else {
+        searchResult.innerHTML = `Nenhum jogo encontrado para: <i>${searchQuery}</i>`;
+    }
+
+    // Atualiza o número da página e o estado dos botões de paginação
+    document.getElementById('page-number').innerText = currentPage;
+    document.getElementById('previous-page').disabled = (currentPage === 1);
+    document.getElementById('next-page').disabled = (games.length < limitGamesPage);
+}
+
+// Carrega a lista de gêneros e preenche o filtro
+async function loadGenres(genres) {
+    genresFilter.innerHTML = '';
+    genres.forEach(genre => {
+        if (genre.name) {
+            const genreCard = `
                     <label class="block mb-1">
                         <input type="checkbox" class="mr-2" value="${genre.id}">
                         ${genre.name}
                     </label>
                 `;
-                genresFilter.innerHTML += genreCard;
-            }
-        });
-    } catch (error) {
-        console.error('Erro ao buscar generos:', error);
-        setErrorMessage(error, 'Erro ao buscar generos');
-    }
+            genresFilter.innerHTML += genreCard;
+        }
+    });
 }
 
 // Carrega a lista de plataformas e preenche o filtro
-async function loadPlatforms() {
-    try {
-        const response = await fetch(`/api/platforms/all?limit=${limitPlatforms}`);
-        const data = await response.json();
-        platformsFilter.innerHTML = '';
-        data.forEach(platform => {
-            if (platform.abbreviation) {
-                const platformCard = `
+async function loadPlatforms(platforms) {
+    platformsFilter.innerHTML = '';
+    platforms.forEach(platform => {
+        if (platform.abbreviation) {
+            const platformCard = `
                     <label class="block mb-1">
                         <input type="checkbox" class="mr-2" value="${platform.id}">
                         ${platform.abbreviation}
                     </label>
                 `;
-                platformsFilter.innerHTML += platformCard;
-            }
-        });
-    } catch (error) {
-        console.error('Erro ao buscar plataformas:', error);
-        setErrorMessage(error, 'Erro ao buscar plataformas');
-    }
+            platformsFilter.innerHTML += platformCard;
+        }
+    });
 }
 
 // Alterna a visibilidade dos botoes colapsáveis do filtro
@@ -97,64 +176,6 @@ function toggleCollapse(id) {
     }
 }
 
-// Carrega a lista de jogos com base na página, pesquisa e filtros
-async function loadGames(page, search, filter) {
-    // Mostrar a mensagem de carregamento
-    loadingMessage.style.display = 'block';
-    gamesList.style.display = 'none';
-    const gamesInList = await getUserGamesList()
-    try {
-        const response = await fetch(`/api/games?limit=${limitGamesPage}&page=${page}&search=${encodeURIComponent(search)}&filter=${encodeURIComponent(filter)}`);
-        const data = await response.json();
-        // Ocultar a mensagem de carregamento
-        loadingMessage.style.display = 'none';
-        gamesList.style.display = 'grid';
-        gamesList.innerHTML = '';
-
-        if (Array.isArray(data) && data.length > 0) {
-            data.forEach(async game => {
-                if (!game.version_title) { // Filtra para não mostrar versões diferentes do mesmo jogo
-                    const gameGenres = formatGenres(game.genres);
-                    const gamePlatforms = formatPlatforms(game.platforms);
-                    const releaseDate = formatReleaseDate(game.first_release_date)
-                    const coverUrl = formatImgURL(game.cover.url)
-                    const element = document.createElement('div');
-                    element.className = "bg-zinc-700 rounded-lg shadow-lg flex flex-col"
-                    element.innerHTML = `
-                        <div class="relative">
-                            <a href="/games/info?id=${game.id}">
-                                <img src="${coverUrl}" alt="${game.name}" class="mb-4 rounded-t-lg object-cover min-h-75 w-full hover:opacity-65">
-                            </a>
-                            <button onclick="wishlist(this)" data-game-id="${game.id}" class="absolute top-2 right-2 outline-none duration-300"></button>
-                        </div>
-                        <div class="text-gray-200 p-4 h-full flex-grow flex flex-col">
-                            <h3 class="pl-2 text-2xl font-bold mb-4">${game.name}</h3>
-                            <p class="p-2">Rating: <b>${game.rating !== undefined ? game.rating.toFixed(2) : 'Rating não disponível'}</b></p>
-                            <p class="p-2">Lançamento: <b>${releaseDate}</b></p>
-                            <p class="p-2">Gêneros: <b>${gameGenres}</b></p>
-                            <p class="p-2">Plataformas: <b>${gamePlatforms}</b></p>
-                        </div>
-                    `;
-                    gamesList.appendChild(element);
-                    const isAdded = await verifyIfGameIsAdded(gamesInList, game.id);
-                    const wishlistButton = element.querySelector("button[data-game-id]");
-                    setWishlistButton(wishlistButton, isAdded);
-                }
-            });
-            searchResult.innerHTML = searchQuery ? `Resultados para: <i>${searchQuery}</i>` : 'Top games (by rating)';
-        } else {
-            searchResult.innerHTML = `Nenhum jogo encontrado para: <i>${searchQuery}</i>`;
-        }
-
-        // Atualiza o número da página e o estado dos botões de paginação
-        document.getElementById('page-number').innerText = currentPage;
-        document.getElementById('previous-page').disabled = (currentPage === 1);
-        document.getElementById('next-page').disabled = (data.length < limitGamesPage);
-    } catch (error) {
-        console.error('Erro ao buscar jogos:', error);
-        setErrorMessage(error, 'Erro ao buscar jogos');
-    }
-}
 
 function formatGenres(genres) {
     const gameGenres = genres?.map(genre => genre.name).filter(Boolean).join(', ') || null;
@@ -188,7 +209,7 @@ function searchGames() {
         searchQuery = input.value.trim().toLowerCase();
         clearFilters()
         filterQuery = fixedFilterQuery
-        loadGames(currentPage, searchQuery, filterQuery)
+        loadData(currentPage, searchQuery, filterQuery)
     }
 }
 
@@ -218,7 +239,7 @@ function filterGames() {
     if (activeFiltersList.innerHTML != "") {
         document.getElementById("active-filters").classList.remove("hidden")
         currentPage = 1
-        loadGames(currentPage, searchQuery, filterQuery)
+        loadData(currentPage, searchQuery, filterQuery)
     }
 }
 
@@ -249,5 +270,5 @@ function clearFilters() {
     checkboxes.forEach(checkbox => {
         checkbox.checked = false;
     });
-    loadGames(currentPage, searchQuery, filterQuery)
+    loadData(currentPage, searchQuery, filterQuery)
 }

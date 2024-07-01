@@ -20,7 +20,7 @@
     padding: 20px;
     margin: 20px;
     position: fixed;
-    bottom: 40px;
+    bottom: 20px;
     right: 20px;
     z-index: 999; /* Garante que fique sobre outros elementos */
 }

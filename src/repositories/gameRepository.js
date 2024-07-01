@@ -27,7 +27,6 @@ export async function verifyIfGameIsAddedToList(user_id, list_id, game_id) {
             });
         });
         if (rows.length > 0) {
-            console.log("Rows: " + JSON.stringify(rows))
             return true
         }
         return false

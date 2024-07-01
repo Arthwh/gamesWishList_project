@@ -44,28 +44,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         return
     }
     wishlistButton.setAttribute("data-game-id", gameId)
-    const gamesInList = await getUserGamesList()
-    const isAdded = await verifyIfGameIsAdded(gamesInList, gameId)
-    setWishlistButton(wishlistButton, isAdded)
-    await loadGameData();
+    await loadGameData()
 });
 
 async function loadGameData() {
     try {
-        const response = await fetch(`/api/games/info?id=${gameId}`);
+        const response = await fetch(`/games/info/data?id=${gameId}`);
         const data = await response.json();
+        console.log(JSON.stringify(data))
         if (!response.ok) {
             throw new Error(data.error)
         }
-        if (Array.isArray(data) && data.length > 0) {
-            //Obtem, formata e seta os games similares
-            const similarGamesData = await getGamesById(data[0].similar_games)
+        if (data) {
+            const gameData = data.game;
+            const addedToList = data.addedToList
+            const similarGamesData = data.similarGamesData
+            const userData = data.user
             if (similarGamesData) {
                 formatAndSetSimilarGames(similarGamesData)
             }
+            await formatAndSetGameInfo(gameData)
+            setWishlistButton(wishlistButton, addedToList)
+
             loadingElement.classList.add("hidden")
             mainContainer.classList.remove("display:none")
-            await formatAndSetGameInfo(data)
         }
     } catch (error) {
         console.error('Erro ao buscar dados do jogo:', error);
@@ -80,6 +82,7 @@ async function formatAndSetGameInfo(gameData) {
     gameCoverElement.src = coverEdited;
     gameCoverElement.classList.remove("hidden")
     gameNameElement.innerHTML = gameData[0].name || "Nome não informado";
+    wishlistButton.setAttribute("data-game-name", gameData[0].name)
     //Formata e atribui o rating
     if (gameData[0].rating) {
         gameRatingElement.classList.remove("hidden")
@@ -158,7 +161,6 @@ function formatAndSetStoryline(summary, storyline) {
     }
     if (storyline) {
         gameStorylineElement.innerHTML += storyline;
-
     }
     if (gameStorylineSection.innerHTML) {
         gameStorylineSection.classList.remove("hidden")
@@ -238,7 +240,6 @@ function formatAndSetSimilarGames(similarGames) {
                         <h3 class="text-xl font-bold mb-2">${game.name}</h3>
                         <p class="text-gray-400">Rating: <b>${game.rating?.toFixed(2) || 'Rating não disponível'}</b></p>
                     </div>
-                
             `;
             similarGamesElement.appendChild(element);
         }

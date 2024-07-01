@@ -26,7 +26,6 @@ async function sendLogin() {
                 body: JSON.stringify({ email, password })
             });
             const data = await response.json();
-            // Verifica se a resposta do servidor foi bem-sucedida
             if (response.ok) {
                 window.location.href = redirectUrl
             } else {
@@ -43,7 +42,7 @@ async function sendLogin() {
 
 // Função para verificar se os campos estão preenchidos
 function verifyNullFields(email, password) {
-    return email !== "" && password !== "";
+    return (email !== "" && password !== "");
 }
 
 // Função para obter parâmetros de consulta

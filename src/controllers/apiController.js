@@ -54,8 +54,8 @@ export const getGameFullInfo = async (request, reply) => {
 // Rota para obter jogos mais avaliados
 export const getTopRatedGames = async (request, reply) => {
     try {
-        const platforms = await fetchTopRatedGamesService();
-        return reply.status(200).send(platforms);
+        const topRatedGames = await fetchTopRatedGamesService();
+        return reply.status(200).send(topRatedGames);
     } catch (error) {
         return reply.status(500).send({ error: error.message });
     }

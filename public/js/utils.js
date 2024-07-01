@@ -1,10 +1,8 @@
 // Seleção dos elementos do DOM
 const logoutLink = document.getElementById("logoutLink") || null
 
-// adiciona listener para o botao de logout
 document.addEventListener("DOMContentLoaded", () => {
     if (logoutLink) {
-        // Adiciona um listener para o botao de logout
         logoutLink.addEventListener('click', async (event) => {
             event.preventDefault();
             await logout();
@@ -31,46 +29,10 @@ async function logout() {
     }
 }
 
-async function getUserGamesList() {
-    try {
-        const response = await fetch('/games/list/data');
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error)
-        }
-        if (Array.isArray(data) && data.length > 0) {
-            return data
-        }
-        return null
-    } catch (error) {
-        console.error('Erro ao buscar dados da lista de jogos do usuario:', error);
-        setErrorMessage(error, "Erro ao buscar dados da lista de jogos do usuario");
-    }
-}
-
-async function getGamesById(ids) {
-    if (!ids || ids.length === 0) {
-        return
-    }
-    try {
-        const response = await fetch(`/api/games/by_id?id=${encodeURIComponent(ids)}`);
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error)
-        }
-        if (Array.isArray(data) && data.length > 0) {
-            return data
-        }
-    } catch (error) {
-        console.error('Erro ao buscar dados dos jogos:', error);
-        setErrorMessage(error, "Erro ao buscar dados dos jogos");
-    }
-}
-
-async function verifyIfGameIsAdded(data, gameId) {
-    if (data) {
-        const games = data.find(game => game.game_id == gameId)
-        if (games) {
+async function verifyIfIsAdded(listOfGames, gameId) {
+    if (listOfGames) {
+        const gamesId = listOfGames.find(game => game.game_id == gameId.toString())
+        if (gamesId) {
             return true
         }
     }
@@ -79,17 +41,17 @@ async function verifyIfGameIsAdded(data, gameId) {
 
 async function wishlist(elemento) {
     const gameId = elemento.getAttribute("data-game-id")
+    const gameName = elemento.getAttribute("data-game-name")
     const isAdded = elemento.getAttribute("data-added") === 'true'
     if (isAdded) {
         if (await removeGameFromWishlist(gameId)) {
             setWishlistButton(elemento, false);
-            setSuccessfulMessage("Game removed successfully from the wishlist", "Wishlist")
+            setSuccessfulMessage("Game removed successfully from the wishlist", gameName)
         }
     } else {
         if (await addToList(gameId)) {
             setWishlistButton(elemento, true);
-            setSuccessfulMessage("Game added successfully to the wishlist", "Wishlist")
-
+            setSuccessfulMessage("Game added successfully to the wishlist", gameName)
         }
     }
 }

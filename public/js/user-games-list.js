@@ -12,27 +12,42 @@ const gameModalCloseButton = document.getElementById("gameModalCloseButton")
 var gamesRemaining = ""
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const gamesInList = await getUserGamesList()
-    if (gamesInList) {
-        loading.classList.remove("hidden")
-        const gamesId = gamesInList?.map(game => game.game_id).filter(Boolean).join(', ') || null;
-        gamesRemaining = gamesId.split(',').map(id => id.trim()).filter(Boolean);
-        if (gamesId) {
-            const userGamesData = await getGamesById(gamesId)
-            if (userGamesData) {
-                renderGameList(userGamesData, gamesInList);
-                loading.classList.add("hidden")
-                gamesDiv.classList.remove("hidden")
-                gameModalCloseButton.addEventListener("click", () => {
-                    gameModal.classList.add("hidden")
-                })
-            }
-        }
+    loading.classList.remove("hidden")
+    const gamesData = await getUserGamesList();
+    if (gamesData?.games) {
+        const userGamesData = gamesData.games
+        // const userData = gamesData.userData
+        gamesRemaining = gamesData.gamesList
+        renderGameList(userGamesData, gamesRemaining);
+        loading.classList.add("hidden")
+        gamesDiv.classList.remove("hidden")
+        gameModalCloseButton.addEventListener("click", () => {
+            gameModal.classList.add("hidden")
+        })
+        document.getElementById("shareListButton").addEventListener("click", shareList);
     } else {
+        loading.classList.add("hidden")
         emptyListMessage.classList.remove("hidden")
+        gamesDiv.classList.add("hidden")
     }
-    document.getElementById("shareListButton").addEventListener("click", shareList);
 });
+
+async function getUserGamesList() {
+    try {
+        const response = await fetch('/games/list/data');
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error("Teste: " + data.error)
+        }
+        if (data?.games) {
+            return data
+        }
+        return null
+    } catch (error) {
+        console.error('Erro ao buscar dados da lista de jogos do usuario:', error);
+        setErrorMessage(error, "Erro ao buscar dados da lista de jogos do usuario");
+    }
+}
 
 function verifyGamesRemaining() {
     if (gamesRemaining.length === 0) {
@@ -41,11 +56,14 @@ function verifyGamesRemaining() {
     }
 }
 
-function removeGameIdFromRemaining(gameId) {
-    const index = gamesRemaining.indexOf(gameId.toString());
-    if (index > -1) {
-        gamesRemaining.splice(index, 1);
-    }
+async function removeGameIdFromRemaining(gameId) {
+    await gamesRemaining.forEach(game => {
+        const index = game.game_id.indexOf(gameId.toString());
+        if (index === 0 || index) {
+            gamesRemaining.splice(index, 1);
+            return
+        }
+    })
 }
 
 function renderGameList(gamesList, gamesInList) {
@@ -56,6 +74,7 @@ function renderGameList(gamesList, gamesInList) {
         gameCard.className = "game-card bg-zinc-700 rounded-lg shadow w-full relative";
         gameCard.id = `gameCard_${game.id}`;
         gameCard.setAttribute("data-status", status)
+        gameCard.setAttribute("data-game-name", game.name)
         gameCard.innerHTML = `
             <a class="block relative overflow-hidden" href="/games/info?id=${game.id}">
                 <img class="object-cover w-full min-h-88 hover:opacity-60 rounded-t-lg" src="${formattedURL}" alt="${game.name}">
@@ -73,7 +92,7 @@ function renderGameList(gamesList, gamesInList) {
                     </button>
                     <div id="dropdown_${game.id}" class="hidden w-56 rounded-l-lg shadow-lg z-10 absolute right-0 mt-2 bg-zinc-800 text-white">
                         <button class="block px-4 py-2 text-left w-full hover:bg-gray-600" onclick="editStatusFromGame(${game.id})">Edit Status</button>
-                        <button class="block px-4 py-2 text-left w-full hover:bg-gray-600" onclick="removeGameFromList(${game.id})">Remove from wishlist</button>
+                        <button class="block px-4 py-2 text-left w-full hover:bg-gray-600" data-game-name="${game.name}" onclick="removeGameFromList(${game.id})">Remove from wishlist</button>
                     </div>
                 </div>
             </div>
@@ -84,20 +103,24 @@ function renderGameList(gamesList, gamesInList) {
 
 async function removeGameFromList(gameId) {
     if (await removeGameFromWishlist(gameId)) {
-        setSuccessfulMessage("Game removed successfully from wishlist", "Wishlist")
-        document.getElementById(`gameCard_${gameId}`).remove();
-        removeGameIdFromRemaining(gameId)
+        const elemento = document.getElementById(`gameCard_${gameId}`);
+        const gameName = elemento.getAttribute("data-game-name")
+        elemento.remove();
+        setSuccessfulMessage("Game removed successfully from wishlist", `${gameName}`)
+        await removeGameIdFromRemaining(gameId)
         verifyGamesRemaining()
     }
 }
 
 async function editStatusFromGame(gameId) {
-    const status = document.getElementById(`gameCard_${gameId}`).getAttribute("data-status");
+    const elemento = document.getElementById(`gameCard_${gameId}`);
+    const status = elemento.getAttribute("data-status");
+    const gameName = elemento.getAttribute("data-game-name")
     gameStatusInput.value = status
     saveGameButton.addEventListener("click", async () => {
         const statusSelected = gameStatusInput.value;
         if (await updateGameStatus(gameId, statusSelected)) {
-            setSuccessfulMessage("Game status updated successfully", "Wishlist")
+            setSuccessfulMessage("Game status updated successfully", gameName)
             document.getElementById(`gameCard_${gameId}`).setAttribute("data-status", statusSelected);
             const statusElement = document.getElementById("status_" + gameId)
             statusElement.innerHTML = `Status: <b>${statusSelected}</b>`
@@ -124,7 +147,6 @@ async function updateGameStatus(gameId, status) {
         });
         const data = await response.json();
         if (response.ok) {
-            console.log("game " + gameId + " status updated");
             return true;
         } else {
             setErrorMessage(data.message || "Undefined", 'Erro ao editar status do jogo');

@@ -1344,10 +1344,6 @@ video {
   opacity: 1;
 }
 
-.group:active .group-active\:duration-0 {
-  transition-duration: 0s;
-}
-
 @media (min-width: 640px) {
   .sm\:w-96 {
     width: 24rem;

@@ -1,5 +1,5 @@
-import { list } from 'postcss';
 import { addGameToListService, deleteGameFromListService, editGameStatusFromListService, getGamesListService } from '../services/gameService.js';
+import { fetchGamesByIdService, fetchGameFullInfoService, fetchGamesService, fetchGenresService, fetchPlatformsService } from '../services/apiService.js';
 
 export const getGamesPage = async (request, reply) => {
     if (!request.isAuthenticated) {
@@ -33,11 +33,86 @@ export const getUserGamesList = async (request, reply) => {
     try {
         const user = request.user
         const listOfGames = await getGamesListService(user);
-        return reply.status(200).send(listOfGames)
+        if (listOfGames) {
+            const gamesId = (listOfGames || []).map(game => game.game_id).filter(Boolean).map(id => id.trim());
+            if (gamesId) {
+                const gamesData = await fetchGamesByIdService(gamesId)
+                return reply.status(200).send({ games: gamesData, gamesList: listOfGames, user: user });
+            }
+        }
+        else {
+            return reply.send({ games: null });
+        }
     } catch (error) {
         return reply.status(500).send({ error: error.message });
     }
 };
+
+export const gameFullGameData = async (request, reply) => {
+    if (!request.isAuthenticated) {
+        const currentUrl = request.raw.url; // obtém a URL solicitada
+        reply.redirect(`/login?redirectUrl=${encodeURIComponent(currentUrl)}`);
+    }
+    try {
+        const user = request.user
+        const gameId = request.query.id
+        if (!gameId) {
+            return reply.status(400).send({ error: 'Game id is required' });
+        }
+        const [gameData, listOfGames] = await Promise.all([
+            fetchGameFullInfoService(gameId),
+            getGamesListService(user)
+        ]);
+        if (gameData) {
+            var addedToList = false
+            if (listOfGames) {
+                const gamesId = (listOfGames || []).map(game => game.game_id).filter(Boolean).map(id => id.trim());
+                addedToList = gamesId.find(game => game.game_id == gameId)
+            }
+            const similarGamesIds = gameData[0].similar_games;
+            if (similarGamesIds) {
+                const similarGamesData = await fetchGamesByIdService(similarGamesIds)
+                return reply.send({ game: gameData, addedToList, similarGamesData, user: user });
+            }
+        }
+        return reply.status(400).send({ error: 'Erro ao buscar dados do jogo: Dados nulos' });
+    } catch (error) {
+        return reply.status(500).send({ error: error.message });
+    }
+};
+
+export const getGamesData = async (request, reply) => {
+    if (!request.isAuthenticated) {
+        const currentUrl = request.raw.url; // obtém a URL solicitada
+        reply.redirect(`/login?redirectUrl=${encodeURIComponent(currentUrl)}`);
+    }
+    try {
+        const user = request.user
+        const { limit, page, search, filter, firstload } = request.query;
+        const decodedSearch = decodeURIComponent(search) || null;
+        const decodedFilter = decodeURIComponent(filter) || null;
+        const offset = (page - 1) * limit;
+
+        if (firstload) {
+            const [gamesData, platformsData, genresData, listOfGames] = await Promise.all([
+                fetchGamesService(limit, offset, decodedSearch, decodedFilter),
+                fetchPlatformsService(limit),
+                fetchGenresService(limit),
+                getGamesListService(user),
+            ])
+            return reply.status(200).send({ gamesData, platformsData, genresData, listOfGames, user });
+        }
+        else {
+            const [gamesData, listOfGames] = await Promise.all([
+                await fetchGamesService(limit, offset, decodedSearch, decodedFilter),
+                await getGamesListService(user),
+            ])
+            return reply.status(200).send({ gamesData, listOfGames, user });
+        }
+    } catch (error) {
+        return reply.status(500).send({ error: error.message });
+    }
+}
 
 export const addGameToList = async (request, reply) => {
     if (!request.isAuthenticated) {
@@ -111,7 +186,7 @@ export const getSharedList = async (request, reply) => {
     }
     const listId = request.query.list
     if (!listId) {
-        return reply.status(400).send({ error: "Lista compartilhada invalida"})
+        return reply.status(400).send({ error: "Lista compartilhada invalida" })
     }
     if (listId) {
         return reply.status(200).send({ listId })
