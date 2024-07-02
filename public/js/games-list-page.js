@@ -57,15 +57,12 @@ async function loadData(page, search, filter) {
         gamesList.style.display = 'none';
         loadingElement = setLoadingElementOverlay(listGamesContainer)
     }
-
     try {
         const response = await fetch(`/games/data?limit=${limitGamesPage}&page=${page}&search=${encodeURIComponent(search)}&filter=${encodeURIComponent(filter)}&firstload=${firstLoad}`);
         const data = await response.json();
-
         if (data.gamesData) {
             const games = data.gamesData;
             const listOfGames = data.listOfGames;
-
             // const userData = data.user
             if (firstLoad) {
                 const platforms = data.platformsData;
@@ -88,7 +85,6 @@ async function loadData(page, search, filter) {
 
 async function loadGames(games, listOfGames) {
     gamesList.innerHTML = '';
-
     if (Array.isArray(games) && games.length > 0) {
         games.forEach(async game => {
             if (!game.version_title) { // Filtra para não mostrar versões diferentes do mesmo jogo
@@ -217,7 +213,6 @@ function filterGames() {
     // Adicionar condições de filtro com base nos valores selecionados
     filterQuery = fixedFilterQuery
     activeFiltersList.innerHTML = ""
-
     if (selectedGenresid.length > 0) {
         filterQuery += `& genres = (${selectedGenresid.join(',')})`;
         activeFiltersList.innerHTML += `<h3 class="text-gray-700"><b>Gêneros: <b></h3>`
@@ -261,7 +256,6 @@ function clearFilters() {
     filterQuery = defaultFIlter
     activeFiltersList.innerHTML = ""
     document.getElementById("active-filters").classList.add("hidden")
-
     const checkboxes = document.querySelectorAll('#collapse-genre input[type="checkbox"], #collapse-platform input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
         checkbox.checked = false;
