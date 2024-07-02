@@ -21,7 +21,7 @@ async function logout() {
         }
         setTransparentOverlay(timeout)
         setSuccessfulMessage("Logged out successfully", "Loggout")
-        var timeout = 2000;
+        var timeout = 2500;
         setTransparentOverlay(timeout)
         setTimeout(() => {
             window.location.href = '/';
