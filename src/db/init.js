@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 
 // Função para criar as tabelas
 async function createTables() {
-    const queryDeleteGamesList = `DELETE FROM games_in_lists`
+    // const queryDeleteGamesList = `DELETE FROM games_in_lists`
     // const queryDropUser = `DROP TABLE IF EXISTS user`
     // const queryDropLists = `DROP TABLE IF EXISTS lists`
     // const queryDropGamesInLists = `DROP TABLE IF EXISTS games_in_lists`
@@ -83,13 +83,13 @@ async function createTables() {
     //     }
     // });
 
-    await db.run(queryDeleteGamesList, (err) => {
-        if (err) {
-            console.error('Erro ao criar tabela de jogos nas listas:', err.message);
-        } else {
-            console.log('Tabela de jogos nas listas criada com sucesso.');
-        }
-    });
+    // await db.run(queryDeleteGamesList, (err) => {
+    //     if (err) {
+    //         console.error('Erro ao criar tabela de jogos nas listas:', err.message);
+    //     } else {
+    //         console.log('Tabela de jogos nas listas criada com sucesso.');
+    //     }
+    // });
 }
 
 // async function insertRootUser() {
@@ -107,7 +107,7 @@ async function createTables() {
 
 // Função para inicializar o banco de dados
 async function init() {
-    await createTables();
+    // await createTables();
     // insertRootUser();
 }
 

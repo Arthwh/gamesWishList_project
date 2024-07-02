@@ -2,7 +2,7 @@
 const gameListContainer = document.getElementById("gameList");
 const emptyListMessage = document.getElementById("emptyListMessage")
 const gamesDiv = document.getElementById("gamesDiv")
-const loading = document.getElementById("loading")
+// const loading = document.getElementById("loading")
 const gameModal = document.getElementById("gameModal")
 const gameModalTitle = document.getElementById("gameModalTitle")
 const gameStatusInput = document.getElementById("gameStatusInput")
@@ -12,21 +12,21 @@ const gameModalCloseButton = document.getElementById("gameModalCloseButton")
 var gamesRemaining = ""
 
 document.addEventListener("DOMContentLoaded", async () => {
-    loading.classList.remove("hidden")
+    const loadingElement = setLoadingElementOverlay()
     const gamesData = await getUserGamesList();
     if (gamesData?.games) {
         const userGamesData = gamesData.games
         // const userData = gamesData.userData
         gamesRemaining = gamesData.gamesList
         renderGameList(userGamesData, gamesRemaining);
-        loading.classList.add("hidden")
+        loadingElement.remove()
         gamesDiv.classList.remove("hidden")
         gameModalCloseButton.addEventListener("click", () => {
             gameModal.classList.add("hidden")
         })
         document.getElementById("shareListButton").addEventListener("click", shareList);
     } else {
-        loading.classList.add("hidden")
+        loadingElement.remove()
         emptyListMessage.classList.remove("hidden")
         gamesDiv.classList.add("hidden")
     }

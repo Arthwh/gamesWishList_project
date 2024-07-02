@@ -37,11 +37,7 @@
         </div>
     </nav>
 
-    <div id="loadingFirst" class="min-h-screen mx-auto my-4 text-center text-gray-200">
-        <p>Carregando...</p>
-    </div>
-
-    <div id="mainContainer" class="container mx-auto flex-1 flex flex-col min-h-screen">
+    <main id="mainContainer" class="container mx-auto flex-1 flex flex-col min-h-screen">
         <!-- Banner de Novidades -->
         <div class="bg-zinc-900 p-6 rounded-lg shadow-lg mb-6 text-center">
             <h1 class="text-4xl font-bold">Novidades</h1>
@@ -98,15 +94,15 @@
             </aside>
 
             <!-- Lista de Jogos -->
-            <main class="flex-1 bg-zinc-800 p-4 rounded-lg shadow-lg ml-6">
+            <div id="listGamesContainer" class="flex-1 bg-zinc-800 p-4 rounded-lg shadow-lg ml-6">
                 <h2 id="searchResult" class="text-3xl font-bold mb-6 text-zinc-100"></h2>
-                <div id="loading" class="justify-center mx-auto my-4 text-center text-gray-200">
+                <!-- <div id="loading" class="justify-center mx-auto my-4 text-center text-gray-200">
                     <p>Carregando jogos...</p>
-                </div>
+                </div> -->
                 <div id="games-list" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-4">
                     <!-- Aqui serão inseridos os jogos dinamicamente -->
                 </div>
-            </main>
+            </div>
         </div>
         <div class="flex justify-center mt-4" id="pagination">
             <button id="previous-page"
@@ -115,7 +111,7 @@
             <button id="next-page"
                 class="bg-zinc-900 hover:bg-zinc-700 text-zinc-200 border-zinc-600 border border-solid font-bold py-2 px-4 rounded-r focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">Próximo</button>
         </div>
-    </div>
+    </main>
     <footer class="bg-zinc-800 text-zinc-200 text-center py-4 mt-6">
         <p>&copy; 2024 Games WishList. All rights reserved.</p>
     </footer>

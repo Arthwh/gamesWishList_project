@@ -19,10 +19,13 @@ async function logout() {
         if (!response.ok) {
             throw new Error(data.message || 'Failed to logout');
         }
+        setTransparentOverlay(timeout)
         setSuccessfulMessage("Logged out successfully", "Loggout")
+        var timeout = 2000;
+        setTransparentOverlay(timeout)
         setTimeout(() => {
             window.location.href = '/';
-        }, 2000)
+        }, timeout)
     } catch (error) {
         setErrorMessage(error.message || "Undefined", 'Failed to logout')
         console.error('Error logging out:', error.message);
@@ -141,4 +144,43 @@ function formatImgURL(url) {
         return url.replace("t_thumb", "t_cover_big")
     }
     return ""
+}
+
+function setLoadingElementOverlay(appendElement) {
+    const element = document.createElement('div');
+    element.classList.add('loading-overlay');
+    element.classList.add('backgroundPattern');
+    element.innerHTML = `
+        <div class="loadingMessageContainer">
+            <h1 class="loadingTitle">Loading</h1>
+            <div class="anim-box">
+                <div class="anim-interieur">
+                    <div class="rect rect1"></div>
+                    <div class="rect rect2"></div>
+                    <div class="rect rect3"></div>
+                    <div class="rect rect4"></div>
+                    <div class="rect rect5"></div>
+                </div>
+            </div>
+        </div>
+    `;
+    if (appendElement) {
+        appendElement.appendChild(element)
+    }
+    else {
+        document.body.appendChild(element);
+    }
+    window.scrollTo(0, 0);
+
+    return element;
+}
+
+function setTransparentOverlay(timeout) {
+    const element = document.createElement('div');
+    element.classList.add('transparent-overlay');
+    document.body.appendChild(element);
+
+    setTimeout(() => {
+        element.remove();
+    }, timeout);
 }

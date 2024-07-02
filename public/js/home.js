@@ -3,8 +3,8 @@ const loginLink = document.getElementById("loginLink")
 const myGames = document.getElementById("myGamesLink")
 const navbarLinks = document.getElementById("navbarLinks")
 const popularGamesDiv = document.getElementById("popular-games-div")
-const popularGamesSection = document.getElementById("popularGames")
-const loadingMessage = document.getElementById('loading');
+const popularGamesContainer = document.getElementById("popularGames")
+const popularGamesSection = document.getElementById('popularGamesSection');
 
 document.addEventListener('DOMContentLoaded', () => {
     isAuthenticated();
@@ -32,11 +32,10 @@ async function isAuthenticated() {
 }
 
 async function loadPopularGames() {
-    loadingMessage.style.display = 'block';
+    const loadingElement = setLoadingElementOverlay(popularGamesSection)
     try {
         const response = await fetch(`/api/games/toprated`);
         const data = await response.json();
-        loadingMessage.style.display = 'none';
         if (Array.isArray(data) && data.length > 0) {
             data.forEach(async game => {
                 const formattedURL = formatImgURL(game.cover.url);
@@ -53,7 +52,8 @@ async function loadPopularGames() {
                 `;
                 popularGamesDiv.appendChild(element);
             })
-            popularGamesSection.classList.remove("hidden")
+            loadingElement.remove()
+            popularGamesContainer.classList.remove("hidden")
         }
     } catch (error) {
         console.error('Erro ao buscar jogos populares:', error);

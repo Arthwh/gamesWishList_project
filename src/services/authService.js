@@ -17,7 +17,6 @@ export async function authenticateUser(email, password) {
         const token = generateToken(user)
         return { token, userId: user.id };
     } catch (error) {
-        console.error('Erro na autenticação:', error.message);
         throw error;
     }
 }

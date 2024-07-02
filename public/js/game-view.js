@@ -4,7 +4,7 @@ const urlParams = new URLSearchParams(queryString);
 const gameId = urlParams.get('id');
 
 // Seleção dos elementos do DOM que serão manipulados
-const loadingElement = document.getElementById("loading")
+// const loadingElement = document.getElementById("loading")
 const mainContainer = document.getElementById("mainContainer")
 const gameCoverElement = document.getElementById("gameCover");
 const gameNameElement = document.getElementById("gameName");
@@ -48,10 +48,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function loadGameData() {
+    const loadingElement = setLoadingElementOverlay()
     try {
         const response = await fetch(`/games/info/data?id=${gameId}`);
         const data = await response.json();
-        console.log(JSON.stringify(data))
         if (!response.ok) {
             throw new Error(data.error)
         }
@@ -66,7 +66,7 @@ async function loadGameData() {
             await formatAndSetGameInfo(gameData)
             setWishlistButton(wishlistButton, addedToList)
 
-            loadingElement.classList.add("hidden")
+            loadingElement.remove()
             mainContainer.classList.remove("display:none")
         }
     } catch (error) {
@@ -150,7 +150,6 @@ function extractSiteName(url) {
         const hostname = new URL(url).hostname;
         return hostname.replace('www.', '');
     } catch (error) {
-        // console.error("Erro ao formatar URL: " + error)
         return null
     }
 }

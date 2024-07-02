@@ -1,7 +1,6 @@
 // Seleção dos elementos do DOM que serão manipulados
 const gamesList = document.getElementById('games-list');
-const loadingMessage = document.getElementById('loading');
-const loadingFirstMessage = document.getElementById('loadingFirst');
+const listGamesContainer = document.getElementById("listGamesContainer")
 const mainContainer = document.getElementById("mainContainer")
 const searchResult = document.getElementById("searchResult")
 const genresFilter = document.getElementById("collapse-genre")
@@ -28,7 +27,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     var filter = filterQuery;
     var search = searchQuery
 
-
     await loadData(page, search, filter)
     addPaginationListeners();
     firstLoad = false;
@@ -50,15 +48,14 @@ function addPaginationListeners() {
 }
 
 async function loadData(page, search, filter) {
+    var loadingElement = ""
     if (firstLoad) {
         mainContainer.style.display = 'none'
-        loadingFirstMessage.style.display = 'block';
-        loadingMessage.style.display = 'none';
+        loadingElement = setLoadingElementOverlay()
     }
     else {
         gamesList.style.display = 'none';
-        loadingMessage.style.display = 'block';
-        loadingFirstMessage.style.display = 'none';
+        loadingElement = setLoadingElementOverlay(listGamesContainer)
     }
 
     try {
@@ -81,8 +78,7 @@ async function loadData(page, search, filter) {
             }
             mainContainer.style.display = 'flex'
             gamesList.style.display = 'grid';
-            loadingFirstMessage.style.display = 'none';
-            loadingMessage.style.display = 'none';
+            loadingElement.remove()
         }
     } catch (error) {
         console.error('Erro ao buscar jogos:', error);
