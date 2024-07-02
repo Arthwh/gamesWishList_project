@@ -37,9 +37,13 @@ function setErrorMessage(message, title) {
     });
 }
 
-function setSuccessfulMessage(message, title) {
+function setSuccessfulMessage(message, title, gameId) {
     if (!message || !title) {
         return
+    }
+    gameUrl = "/games/info?id=" + gameId;
+    if (!gameId) {
+        gameUrl = '#'
     }
     if (messageSetElement) {
         messageSetElement.remove();
@@ -56,7 +60,9 @@ function setSuccessfulMessage(message, title) {
                         fill-rule="evenodd"></path>
                 </svg>
                 <div class="flex-1">
+                <a href="${gameUrl}">
                     <p class="success-prompt-heading font-bold">${title}</p>
+                </a>
                     <ul role="list">
                         <li>${message}</li>
                     </ul>

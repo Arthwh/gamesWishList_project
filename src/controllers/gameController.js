@@ -64,18 +64,15 @@ export const gameFullGameData = async (request, reply) => {
             getGamesListService(user)
         ]);
         if (gameData) {
-            var addedToList = false
-            if (listOfGames) {
-                const gamesId = (listOfGames || []).map(game => game.game_id).filter(Boolean).map(id => id.trim());
-                addedToList = gamesId.find(game => game.game_id == gameId)
-            }
+            var addedToList;
+            (listOfGames)?.map(game => game.game_id).filter(Boolean).find(game => game === gameId.toString()) ? addedToList = true : addedToList = false;
             const similarGamesIds = gameData[0].similar_games;
             if (similarGamesIds) {
                 const similarGamesData = await fetchGamesByIdService(similarGamesIds)
                 return reply.send({ game: gameData, addedToList, similarGamesData, user: user });
             }
         }
-        return reply.status(400).send({ error: 'Erro ao buscar dados do jogo: Dados nulos' });
+        throw new Error('Dados do game nulos');
     } catch (error) {
         return reply.status(500).send({ error: error.message });
     }

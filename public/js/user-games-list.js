@@ -2,7 +2,6 @@
 const gameListContainer = document.getElementById("gameList");
 const emptyListMessage = document.getElementById("emptyListMessage")
 const gamesDiv = document.getElementById("gamesDiv")
-// const loading = document.getElementById("loading")
 const gameModal = document.getElementById("gameModal")
 const gameModalTitle = document.getElementById("gameModalTitle")
 const gameStatusInput = document.getElementById("gameStatusInput")
@@ -49,7 +48,7 @@ async function getUserGamesList() {
     }
 }
 
-function verifyGamesRemaining() {
+async function verifyGamesRemaining() {
     if (gamesRemaining.length === 0) {
         emptyListMessage.classList.remove("hidden");
         gamesDiv.classList.add("hidden");
@@ -57,13 +56,12 @@ function verifyGamesRemaining() {
 }
 
 async function removeGameIdFromRemaining(gameId) {
-    await gamesRemaining.forEach(game => {
-        const index = game.game_id.indexOf(gameId.toString());
-        if (index === 0 || index) {
-            gamesRemaining.splice(index, 1);
-            return
+    for (let i = gamesRemaining.length - 1; i >= 0; i--) {
+        if (gamesRemaining[i].game_id === gameId.toString()) {
+            gamesRemaining.splice(i, 1);
+            break; // se você quiser remover apenas o primeiro jogo correspondente, use break
         }
-    })
+    }
 }
 
 function renderGameList(gamesList, gamesInList) {
@@ -105,10 +103,10 @@ async function removeGameFromList(gameId) {
     if (await removeGameFromWishlist(gameId)) {
         const elemento = document.getElementById(`gameCard_${gameId}`);
         const gameName = elemento.getAttribute("data-game-name")
-        elemento.remove();
-        setSuccessfulMessage("Game removed successfully from wishlist", `${gameName}`)
+        setSuccessfulMessage("Game removed successfully from wishlist", `${gameName}`, gameId)
         await removeGameIdFromRemaining(gameId)
-        verifyGamesRemaining()
+        await verifyGamesRemaining()
+        elemento.remove();
     }
 }
 
@@ -120,7 +118,7 @@ async function editStatusFromGame(gameId) {
     saveGameButton.addEventListener("click", async () => {
         const statusSelected = gameStatusInput.value;
         if (await updateGameStatus(gameId, statusSelected)) {
-            setSuccessfulMessage("Game status updated successfully", gameName)
+            setSuccessfulMessage("Game status updated successfully", gameName, gameId)
             document.getElementById(`gameCard_${gameId}`).setAttribute("data-status", statusSelected);
             const statusElement = document.getElementById("status_" + gameId)
             statusElement.innerHTML = `Status: <b>${statusSelected}</b>`

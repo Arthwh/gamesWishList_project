@@ -49,12 +49,12 @@ async function wishlist(elemento) {
     if (isAdded) {
         if (await removeGameFromWishlist(gameId)) {
             setWishlistButton(elemento, false);
-            setSuccessfulMessage("Game removed successfully from the wishlist", gameName)
+            setSuccessfulMessage("Game removed successfully from the wishlist", gameName, gameId)
         }
     } else {
         if (await addToList(gameId)) {
             setWishlistButton(elemento, true);
-            setSuccessfulMessage("Game added successfully to the wishlist", gameName)
+            setSuccessfulMessage("Game added successfully to the wishlist", gameName, gameId)
         }
     }
 }
