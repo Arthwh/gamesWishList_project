@@ -4,7 +4,6 @@ const urlParams = new URLSearchParams(queryString);
 const gameId = urlParams.get('id');
 
 // Seleção dos elementos do DOM que serão manipulados
-// const loadingElement = document.getElementById("loading")
 const mainContainer = document.getElementById("mainContainer")
 const gameCoverElement = document.getElementById("gameCover");
 const gameNameElement = document.getElementById("gameName");
